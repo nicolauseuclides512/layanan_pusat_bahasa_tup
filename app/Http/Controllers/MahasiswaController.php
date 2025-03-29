@@ -11,7 +11,7 @@ class MahasiswaController extends Controller
     // 🟢 Menampilkan form registrasi
     public function showRegistrationForm()
     {
-        return view('mahasiswa.register'); // Blade: resources/views/mahasiswa/register.blade.php
+        return view('auth.register'); // Blade: resources/views/mahasiswa/register.blade.php
     }
 
     // 🟢 Proses registrasi mahasiswa
