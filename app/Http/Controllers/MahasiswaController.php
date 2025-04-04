@@ -17,20 +17,21 @@ class MahasiswaController extends Controller
     // 🟢 Proses registrasi mahasiswa
     public function register(Request $request)
     {
+//        dd($request->all());
         $request->validate([
             'nama' => 'required|string|max:255',
             'email' => 'required|email|unique:mahasiswas,email',
             'password' => 'required|min:6|confirmed',
             'no_hp' => 'required',
-            'nim' => 'required|unique:mahasiswas,nim'
+            'nim' => 'required|unique:mahasiswas,nim',
         ]);
 
         Mahasiswa::create([
             'nama' => $request->nama,
             'email' => $request->email,
-            'password' => Hash::make($request->password),
             'no_hp' => $request->no_hp,
-            'nim' => $request->nim
+            'nim' => $request->nim,
+            'password' => Hash::make($request->password)
         ]);
 
         return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login.');

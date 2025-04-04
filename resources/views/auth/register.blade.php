@@ -46,17 +46,26 @@
         <p class="text-center text-muted">Start your journey with us today</p>
         <form action="{{ route('register') }}" method="POST">
             @csrf
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
             <div class="mb-3">
-                <label for="full_name" class="form-label">Full Name</label>
-                <input type="text" class="form-control" id="full_name" name="full_name" required>
+                <label for="nama" class="form-label">Full Name</label>
+                <input type="text" class="form-control" id="nama" name="nama" required>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email address</label>
                 <input type="email" class="form-control" id="email" name="email" required>
             </div>
             <div class="mb-3">
-                <label for="phone" class="form-label">Phone Number</label>
-                <input type="text" class="form-control" id="phone" name="phone" required>
+                <label for="no_hp" class="form-label">Phone Number</label>
+                <input type="text" class="form-control" id="no_hp" name="no_hp" required>
             </div>
             <div class="mb-3">
                 <label for="nim" class="form-label">Student ID (NIM)</label>
@@ -65,6 +74,10 @@
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
                 <input type="password" class="form-control" id="password" name="password" required>
+            </div>
+            <div class="mb-3">
+                <label for="password_confirmation" class="form-label">Confirm Password</label>
+                <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
             </div>
             <button type="submit" class="btn btn-register">Register</button>
         </form>
