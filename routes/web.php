@@ -27,6 +27,12 @@ Route::get('/register', [MahasiswaController::class, 'showRegistrationForm'])->n
 Route::post('/register', [MahasiswaController::class, 'register']);
 
 // =============================
+// ✅ LUPA PASSWORD
+// =============================
+Route::get('/reset-password', [AuthController::class, 'showResetPasswordForm'])->name('reset.password.form');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('reset.password');
+
+// =============================
 // ✅ DASHBOARD (ADMIN & MAHASISWA)
 // =============================
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
