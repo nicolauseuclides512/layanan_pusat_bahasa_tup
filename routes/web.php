@@ -35,7 +35,11 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
 // =============================
 // ✅ DASHBOARD (ADMIN & MAHASISWA)
 // =============================
-Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('auth')->name('dashboard');
+// Rute untuk dashboard mahasiswa
+Route::get('/dashboard/mahasiswa', [DashboardController::class, 'mahasiswa'])->name('dashboard.mahasiswa')->middleware('auth');
+// Rute untuk dashboard admin
+Route::get('/dashboard/admin', [DashboardController::class, 'admin'])->name('dashboard.admin')->middleware('auth');
+
 
 // =============================
 // ✅ MANAJEMEN SERTIFIKAT (MAHASISWA)

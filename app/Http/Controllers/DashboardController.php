@@ -8,14 +8,13 @@ use Illuminate\Support\Facades\Auth;
 class DashboardController extends Controller
 {
     // 🟢 Menampilkan dashboard berdasarkan tipe user
-    public function index()
+    public function mahasiswa()
     {
-        $user = Auth::user();
+        return view('dashboard.mahasiswa'); // Ganti dengan path yang sesuai
+    }
 
-        if ($user->isAdmin()) {
-            return view('dashboard.admin'); // Blade: resources/views/dashboard/admin.blade.php
-        } else {
-            return view('dashboard.mahasiswa'); // Blade: resources/views/dashboard/mahasiswa.blade.php
-        }
+    public function admin()
+    {
+        return view('dashboard.admin'); // Ganti dengan path yang sesuai
     }
 }

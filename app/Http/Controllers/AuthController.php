@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
@@ -25,11 +26,22 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        if (Auth::attempt($request->only('email', 'password'))) {
-            return redirect()->route('dashboard')->with('success', 'Login berhasil!');
+        // Cek di tabel mahasiswa
+        $mahasiswa = Mahasiswa::where('email', $request->email)->first();
+        if ($mahasiswa && Hash::check($request->password, $mahasiswa->password)) {
+            Auth::login($mahasiswa);
+            return redirect()->route('dashboard.mahasiswa')->with('success', 'Login berhasil!');
         }
 
-        return back()->withErrors(['email' => 'Email atau password salah.']);
+        // Cek di tabel admin
+        $admin = Admin::where('email', $request->email)->first();
+        if ($admin && Hash::check($request->password, $admin->password)) {
+            Auth::login($admin);
+            return redirect()->route('dashboard.admin')->with('success', 'Login berhasil!');
+        }
+
+        // Jika tidak ada yang cocok
+        return redirect()->back()->withErrors(['email' => 'Email atau password salah.']);
     }
 
     // 🔴 Logout
