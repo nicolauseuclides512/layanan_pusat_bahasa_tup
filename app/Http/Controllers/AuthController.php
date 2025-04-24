@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
-use App\Models\Mahasiswa; // Pastikan model Mahasiswa di-import
-
+use App\Models\Mahasiswa;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 
 class AuthController extends Controller
 {
@@ -22,34 +22,36 @@ class AuthController extends Controller
     // 🟢 Proses login
     public function login(Request $request)
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+            'remember' => ['boolean']
         ]);
 
-        // Cek di tabel mahasiswa menggunakan guard mahasiswa
-        if (Auth::guard('mahasiswa')->attempt([
-            'email' => $request->email,
-            'password' => $request->password
-        ], $request->remember)) {
-            \Log::info('Login berhasil', ['email' => $request->email]);
-            $request->session()->regenerate();
-            \Log::info('Session di-regenerate', ['session' => session()->all()]);
-            return redirect()->route('dashboard.mahasiswa')->with('success', 'Login berhasil!');
-        } else {
-            \Log::warning('Login gagal', ['email' => $request->email]);
+        // Add rate limiting
+        if (!RateLimiter::tooManyAttempts($request->email, 5)) {
+            // Try student authentication
+            if (Auth::guard('mahasiswa')->attempt($credentials, $request->remember)) {
+                $request->session()->regenerate();
+                Log::info('Student login successful', ['email' => $request->email]);
+                return redirect()->intended(route('dashboard.mahasiswa'))
+                    ->with('success', 'Login berhasil!');
+            }
+
+            // Try admin authentication
+            if (Auth::guard('web')->attempt($credentials, $request->remember)) {
+                $request->session()->regenerate();
+                Log::info('Admin login successful', ['email' => $request->email]);
+                return redirect()->intended(route('dashboard.admin'))
+                    ->with('success', 'Login berhasil!');
+            }
+
+            RateLimiter::hit($request->email);
         }
 
-        // Cek di tabel admin menggunakan guard web
-        if (Auth::guard('web')->attempt([
-            'email' => $request->email,
-            'password' => $request->password
-        ])) {
-            return redirect()->route('dashboard.admin')->with('success', 'Login berhasil!');
-        }
-
-        // Jika tidak ada yang cocok
-        return redirect()->back()->withErrors(['email' => 'Email atau password salah.']);
+        return back()
+            ->withInput($request->only('email'))
+            ->withErrors(['email' => trans('auth.failed')]);
     }
 
     // 🔴 Logout
@@ -66,26 +68,39 @@ class AuthController extends Controller
 
     public function resetPassword(Request $request)
     {
-        // Validasi input
         $request->validate([
-            'email' => 'required|email|exists:mahasiswas,email',
-            'nim' => 'required|exists:mahasiswas,nim',
-            'password' => 'required|min:6|confirmed', // Pastikan ada field password_confirmation di form
+            'email' => ['required', 'email', 'exists:mahasiswas,email'],
+            'nim' => ['required', 'exists:mahasiswas,nim'],
+            'password' => [
+                'required',
+                'confirmed',
+                PasswordRule::min(8)
+                    ->mixedCase()
+                    ->numbers()
+                    ->symbols()
+            ]
         ]);
 
-        // Temukan pengguna berdasarkan email dan NIM
-        $mahasiswa = Mahasiswa::where('email', $request->email)
-            ->where('nim', $request->nim)
-            ->first();
+        try {
+            $mahasiswa = Mahasiswa::where('email', $request->email)
+                ->where('nim', $request->nim)
+                ->firstOrFail();
 
-        if ($mahasiswa) {
-            // Update password
             $mahasiswa->password = Hash::make($request->password);
             $mahasiswa->save();
 
-            return redirect()->route('login')->with('status', 'Password berhasil direset. Silakan login.');
+            Log::info('Password reset successful', ['email' => $request->email]);
+            
+            return redirect()
+                ->route('login')
+                ->with('status', 'Password berhasil direset. Silakan login.');
+        } catch (\Exception $e) {
+            Log::error('Password reset failed', [
+                'email' => $request->email,
+                'error' => $e->getMessage()
+            ]);
+            
+            return back()->withErrors(['error' => 'Terjadi kesalahan saat mereset password.']);
         }
-
-        return redirect()->back()->withErrors(['error' => 'Informasi tidak valid.']);
     }
 }
