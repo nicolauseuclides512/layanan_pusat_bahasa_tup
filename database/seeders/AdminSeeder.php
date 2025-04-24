@@ -5,23 +5,46 @@ namespace Database\Seeders;
 use App\Models\Admin;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AdminSeeder extends Seeder
 {
-    public function run()
-    {
-        Admin::create([
+    protected $admins = [
+        [
             'nama' => 'Petrus Kerowe Goran',
             'email' => 'petruskgoran@telkomuniversity.ac.id',
-            'password' => Hash::make('p3tru5bh5128!'), 
-            'nip' => '23850012'
-        ]);
-
-        Admin::create([
+            'password' => 'p3tru5bh5128!',
+            'nip' => '23850012',
+            'role' => 'super_admin',
+            'status' => 'active'
+        ],
+        [
             'nama' => 'Nicolaus Euclides Wahyu Nugroho',
             'email' => 'nicolausn@telkomuniversity.ac.id',
-            'password' => Hash::make('n1c0bh5128!'),
-            'nip' => '24940004'
-        ]);
+            'password' => 'n1c0bh5128!',
+            'nip' => '24940004',
+            'role' => 'admin',
+            'status' => 'active'
+        ]
+    ];
+
+    public function run()
+    {
+        try {
+            foreach ($this->admins as $admin) {
+                Admin::updateOrCreate(
+                    ['email' => $admin['email']],
+                    array_merge($admin, [
+                        'password' => Hash::make($admin['password']),
+                        'email_verified_at' => now()
+                    ])
+                );
+            }
+
+            $this->command->info('Admin users seeded successfully!');
+        } catch (\Exception $e) {
+            Log::error('Error seeding admin users: ' . $e->getMessage());
+            $this->command->error('Error seeding admin users: ' . $e->getMessage());
+        }
     }
 }
