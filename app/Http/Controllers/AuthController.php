@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use App\Models\Mahasiswa; // Pastikan model Mahasiswa di-import
 
 
@@ -26,17 +27,24 @@ class AuthController extends Controller
             'password' => 'required'
         ]);
 
-        // Cek di tabel mahasiswa
-        $mahasiswa = Mahasiswa::where('email', $request->email)->first();
-        if ($mahasiswa && Hash::check($request->password, $mahasiswa->password)) {
-            Auth::login($mahasiswa);
+        // Cek di tabel mahasiswa menggunakan guard mahasiswa
+        if (Auth::guard('mahasiswa')->attempt([
+            'email' => $request->email,
+            'password' => $request->password
+        ], $request->remember)) {
+            \Log::info('Login berhasil', ['email' => $request->email]);
+            $request->session()->regenerate();
+            \Log::info('Session di-regenerate', ['session' => session()->all()]);
             return redirect()->route('dashboard.mahasiswa')->with('success', 'Login berhasil!');
+        } else {
+            \Log::warning('Login gagal', ['email' => $request->email]);
         }
 
-        // Cek di tabel admin
-        $admin = Admin::where('email', $request->email)->first();
-        if ($admin && Hash::check($request->password, $admin->password)) {
-            Auth::login($admin);
+        // Cek di tabel admin menggunakan guard web
+        if (Auth::guard('web')->attempt([
+            'email' => $request->email,
+            'password' => $request->password
+        ])) {
             return redirect()->route('dashboard.admin')->with('success', 'Login berhasil!');
         }
 

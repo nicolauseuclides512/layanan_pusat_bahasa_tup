@@ -4,7 +4,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Sertifikat extends Model
 {
@@ -12,22 +11,17 @@ class Sertifikat extends Model
 
     protected $fillable = [
         'mahasiswa_id',
-        'nama_sertifikat',
-        'lembaga_penyelenggara',
+        'nama_dokumen',
+        'file_path', 
         'tanggal_ujian',
         'tanggal_berakhir',
+        'lembaga_penyelenggara',
         'status',
-        'alasan_penolakan',
-        'file_path'
+        'alasan_penolakan'
     ];
 
-    protected $casts = [
-        'tanggal_ujian' => 'date',
-        'tanggal_berakhir' => 'date',
-        'status' => 'string'
-    ];
-
-    public function mahasiswa(): BelongsTo {
+    public function mahasiswa()
+    {
         return $this->belongsTo(Mahasiswa::class);
     }
 }

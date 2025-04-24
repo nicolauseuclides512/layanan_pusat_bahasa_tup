@@ -29,6 +29,15 @@
                                 <input type="text" class="form-control" id="nim" name="nim" required>
                             </div>
                             <div class="mb-3">
+                                <label for="program_studi_id" class="form-label">Study Program</label>
+                                <select class="form-select" id="program_studi_id" name="program_studi_id" required>
+                                    <option value="">Select Study Program</option>
+                                    @foreach(App\Models\ProgramStudi::all() as $prodi)
+                                        <option value="{{ $prodi->id }}">{{ $prodi->nama_program_studi }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
                                 <input type="password" class="form-control" id="password" name="password" required>
                             </div>

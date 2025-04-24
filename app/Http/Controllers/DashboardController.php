@@ -7,14 +7,24 @@ use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
-    // 🟢 Menampilkan dashboard berdasarkan tipe user
+    // 🟢 Menampilkan dashboard mahasiswa
     public function mahasiswa()
     {
-        return view('dashboard.mahasiswa'); // Ganti dengan path yang sesuai
+        if (!Auth::guard('mahasiswa')->check()) {
+            abort(403, 'Unauthorized access');
+        }
+
+        $mahasiswa = Auth::guard('mahasiswa')->user();
+        return view('dashboard.mahasiswa', compact('mahasiswa'));
     }
 
+    // 🟢 Menampilkan dashboard admin
     public function admin()
     {
-        return view('dashboard.admin'); // Ganti dengan path yang sesuai
+        if (!Auth::check() || !(Auth::user() instanceof \App\Models\Admin)) {
+            abort(403, 'Unauthorized access');
+        }
+
+        return view('dashboard.admin');
     }
 }

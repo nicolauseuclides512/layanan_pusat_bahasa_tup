@@ -4,8 +4,15 @@
     </div>
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a class="nav-link active" href="{{ route('dashboard') }}">
-                <i class="bi bi-house-door"></i> Home
+            @auth('mahasiswa')
+                <a class="nav-link active" href="{{ route('dashboard.mahasiswa') }}">
+                    <i class="bi bi-house-door"></i> Home
+                </a>
+            @elseauth('web')
+                <a class="nav-link active" href="{{ route('dashboard.admin') }}">
+                    <i class="bi bi-house-door"></i> Home
+                </a>
+            @endauth
             </a>
         </li>
         <li class="nav-item">

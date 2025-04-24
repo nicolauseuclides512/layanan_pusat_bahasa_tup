@@ -24,6 +24,7 @@ class MahasiswaController extends Controller
             'password' => 'required|min:6|confirmed',
             'no_hp' => 'required',
             'nim' => 'required|unique:mahasiswas,nim',
+            'program_studi_id' => 'required|exists:program_studis,id',
         ]);
 
         Mahasiswa::create([
@@ -31,7 +32,8 @@ class MahasiswaController extends Controller
             'email' => $request->email,
             'no_hp' => $request->no_hp,
             'nim' => $request->nim,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
+            'program_studi_id' => $request->program_studi_id
         ]);
 
         return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login.');

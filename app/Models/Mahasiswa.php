@@ -4,21 +4,23 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Notifications\Notifiable;
 
 class Mahasiswa extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
 
-    protected $fillable = ['nama', 'email', 'password', 'no_hp', 'nim'];
-    protected $hidden = ['password']; // Menyembunyikan password saat query
-    protected $casts = ['email_verified_at' => 'datetime']; // Jika ada verifikasi email
+    protected $fillable = [
+        'nama',
+        'email', 
+        'password',
+        'no_hp',
+        'nim',
+        'program_studi_id'
+    ];
 
-    public function sertifikats(): HasMany {
-        return $this->hasMany(Sertifikat::class);
-    }
-
-    public function notifikasis(): HasMany {
-        return $this->hasMany(Notifikasi::class);
-    }
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
 }
