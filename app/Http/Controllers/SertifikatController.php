@@ -13,10 +13,13 @@ class SertifikatController extends Controller
     // 🟢 Menampilkan daftar sertifikat
     public function index()
     {
-        $sertifikats = Sertifikat::with(['mahasiswa'])
+        $sertifikats = Sertifikat::with(['user', 'user.programStudi'])
+            ->when(auth()->user()->role === 'mahasiswa', function ($query) {
+                return $query->where('user_id', auth()->id());
+            })
             ->latest()
-            ->paginate(15);
-            
+            ->get();
+
         return view('sertifikat.index', compact('sertifikats'));
     }
 
@@ -29,73 +32,73 @@ class SertifikatController extends Controller
     // 🟢 Menyimpan sertifikat baru
     public function store(Request $request)
     {
-        $validated = $request->validate([
-            'mahasiswa_id' => ['required', 'exists:mahasiswas,id'],
-            'nama_sertifikat' => ['required', 'string', 'max:255'],
-            'lembaga_penyelenggara' => ['required', 'string', 'max:255'],
-            'tanggal_ujian' => ['required', 'date', 'before_or_equal:today'],
-            'tanggal_berakhir' => ['required', 'date', 'after:tanggal_ujian'],
-            'file' => ['required', 'file', 'mimes:pdf', 'max:5120'] // 5MB max
+        $request->validate([
+            'gambar_sertifikat' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'nilai' => 'required|numeric|min:0|max:100',
+            'tanggal_ujian' => 'required|date',
+            'tanggal_kadaluarsa' => 'required|date|after:tanggal_ujian',
+            'lembaga_penyelenggara' => 'required|string|max:255',
         ]);
 
-        try {
-            $fileName = Str::uuid() . '.' . $request->file('file')->getClientOriginalExtension();
-            $filePath = $request->file('file')->storeAs(
-                'sertifikat/' . date('Y/m'),
-                $fileName,
-                'public'
-            );
+        $path = $request->file('gambar_sertifikat')->store('sertifikats', 'public');
 
-            $sertifikat = Sertifikat::create([
-                'mahasiswa_id' => $validated['mahasiswa_id'],
-                'nama_sertifikat' => $validated['nama_sertifikat'],
-                'lembaga_penyelenggara' => $validated['lembaga_penyelenggara'],
-                'tanggal_ujian' => $validated['tanggal_ujian'],
-                'tanggal_berakhir' => $validated['tanggal_berakhir'],
-                'status' => 'pending',
-                'file_path' => $filePath
-            ]);
+        Sertifikat::create([
+            'user_id' => auth()->id(),
+            'gambar_sertifikat' => $path,
+            'nilai' => $request->nilai,
+            'tanggal_ujian' => $request->tanggal_ujian,
+            'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa,
+            'lembaga_penyelenggara' => $request->lembaga_penyelenggara,
+            'status' => 'pending',
+        ]);
 
-            Log::info('Certificate uploaded successfully', [
-                'sertifikat_id' => $sertifikat->id,
-                'mahasiswa_id' => $validated['mahasiswa_id']
-            ]);
+        return redirect()->route('sertifikat.index')->with('success', 'Sertifikat berhasil ditambahkan.');
+    }
 
-            return redirect()
-                ->route('sertifikat.index')
-                ->with('success', 'Sertifikat berhasil ditambahkan.');
-
-        } catch (\Exception $e) {
-            Log::error('Certificate upload failed', [
-                'error' => $e->getMessage(),
-                'mahasiswa_id' => $validated['mahasiswa_id']
-            ]);
-
-            return back()
-                ->withInput()
-                ->withErrors(['error' => 'Gagal mengunggah sertifikat. Silakan coba lagi.']);
+    public function update(Request $request, Sertifikat $sertifikat)
+    {
+        if ($sertifikat->status !== 'pending') {
+            return back()->withErrors(['status' => 'Sertifikat yang sudah divalidasi tidak dapat diubah.']);
         }
+
+        $request->validate([
+            'gambar_sertifikat' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'nilai' => 'required|numeric|min:0|max:100',
+            'tanggal_ujian' => 'required|date',
+            'tanggal_kadaluarsa' => 'required|date|after:tanggal_ujian',
+            'lembaga_penyelenggara' => 'required|string|max:255',
+        ]);
+
+        if ($request->hasFile('gambar_sertifikat')) {
+            Storage::disk('public')->delete($sertifikat->gambar_sertifikat);
+            $path = $request->file('gambar_sertifikat')->store('sertifikats', 'public');
+            $sertifikat->gambar_sertifikat = $path;
+        }
+
+        $sertifikat->update([
+            'nilai' => $request->nilai,
+            'tanggal_ujian' => $request->tanggal_ujian,
+            'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa,
+            'lembaga_penyelenggara' => $request->lembaga_penyelenggara,
+        ]);
+
+        return redirect()->route('sertifikat.index')->with('success', 'Sertifikat berhasil diperbarui.');
     }
 
     public function destroy(Sertifikat $sertifikat)
     {
-        try {
-            if ($sertifikat->file_path && Storage::exists($sertifikat->file_path)) {
-                Storage::delete($sertifikat->file_path);
-            }
-            
-            $sertifikat->delete();
-            
-            return redirect()
-                ->route('sertifikat.index')
-                ->with('success', 'Sertifikat berhasil dihapus.');
-        } catch (\Exception $e) {
-            Log::error('Certificate deletion failed', [
-                'sertifikat_id' => $sertifikat->id,
-                'error' => $e->getMessage()
-            ]);
-            
-            return back()->withErrors(['error' => 'Gagal menghapus sertifikat.']);
+        if ($sertifikat->status !== 'pending') {
+            return back()->withErrors(['status' => 'Sertifikat yang sudah divalidasi tidak dapat dihapus.']);
         }
+
+        Storage::disk('public')->delete($sertifikat->gambar_sertifikat);
+        $sertifikat->delete();
+
+        return redirect()->route('sertifikat.index')->with('success', 'Sertifikat berhasil dihapus.');
+    }
+
+    public function preview(Sertifikat $sertifikat)
+    {
+        return view('sertifikat.preview', compact('sertifikat'));
     }
 }

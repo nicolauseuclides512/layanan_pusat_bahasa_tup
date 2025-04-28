@@ -11,7 +11,9 @@ class ProgramStudi extends Model
 
     protected $fillable = [
         'kode_program_studi', 
-        'nama_program_studi'
+        'nama_program_studi',
+        'jenjang',
+        'status',
     ];
 
     public function mahasiswa()

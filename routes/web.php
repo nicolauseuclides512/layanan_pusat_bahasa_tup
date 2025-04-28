@@ -14,17 +14,34 @@ Route::get('/', function () {
 });
 
 // =============================
-// ✅ AUTHENTICATION (LOGIN & LOGOUT)
+// ✅ AUTHENTICATION (LOGIN, REGISTER, FORGOT PASSWORD)
 // =============================
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
+Route::middleware('guest')->group(function () {
+    Route::get('register', [AuthController::class, 'showRegisterForm'])->name('register');
+    Route::post('register', [AuthController::class, 'register']);
+    Route::get('login', [AuthController::class, 'showLoginForm'])->name('login');
+    Route::post('login', [AuthController::class, 'login']);
+    Route::get('forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
+    Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->name('password.email');
+});
 
-// =============================
-// ✅ REGISTRASI MAHASISWA
-// =============================
-Route::get('/register', [MahasiswaController::class, 'showRegistrationForm'])->name('register');
-Route::post('/register', [MahasiswaController::class, 'register']);
+Route::middleware('auth')->group(function () {
+    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+    Route::get('change-password', [AuthController::class, 'showChangePasswordForm'])->name('password.change');
+    Route::post('change-password', [AuthController::class, 'changePassword'])->name('password.update');
+
+    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::middleware('role:mahasiswa')->group(function () {
+        Route::resource('sertifikat', SertifikatController::class);
+        Route::get('sertifikat/{sertifikat}/preview', [SertifikatController::class, 'preview'])->name('sertifikat.preview');
+    });
+
+    Route::middleware('role:admin')->group(function () {
+        Route::resource('verifikasi', VerifikasiController::class);
+        Route::get('verifikasi/{sertifikat}/preview', [VerifikasiController::class, 'preview'])->name('verifikasi.preview');
+    });
+});
 
 // =============================
 // ✅ LUPA PASSWORD
@@ -36,7 +53,7 @@ Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('
 // ✅ DASHBOARD (ADMIN & MAHASISWA)
 // =============================
 // Rute untuk dashboard mahasiswa
-Route::get('/dashboard/mahasiswa', [DashboardController::class, 'mahasiswa'])->name('dashboard.mahasiswa')->middleware('auth');
+Route::get('/dashboard/mahasiswa', [DashboardController::class, 'mahasiswa'])->name('dashboard.mahasiswa')->middleware('auth:mahasiswa');
 // Rute untuk dashboard admin
 Route::get('/dashboard/admin', [DashboardController::class, 'admin'])->name('dashboard.admin')->middleware('auth');
 

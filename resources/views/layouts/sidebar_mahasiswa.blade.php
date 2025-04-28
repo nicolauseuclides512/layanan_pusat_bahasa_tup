@@ -10,7 +10,7 @@
         </li>
         <li class="nav-item">
             <a class="nav-link d-flex align-items-center py-3 px-4" href="{{ route('sertifikat.index') }}">
-                <i class="bi bi-file-earmark-text me-3"></i> Sertifikat
+                <i class="bi bi-file-earmark-text me-3"></i> List Sertifikat
             </a>
         </li>
         <li class="nav-item border-top">
