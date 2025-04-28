@@ -1,80 +1,58 @@
-@extends('layouts.app')
+@extends('layouts.guest')
 
 @section('content')
-<div class="container">
-    <div class="row justify-content-center">
-        <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">{{ __('Reset Password') }}</div>
-
-                <div class="card-body">
-                    <form method="POST" action="{{ route('password.email') }}">
-                        @csrf
-
-                        <div class="row mb-3">
-                            <label for="email" class="col-md-4 col-form-label text-md-end">{{ __('Email') }}</label>
-                            <div class="col-md-6">
-                                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus>
-                                @error('email')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label for="nim" class="col-md-4 col-form-label text-md-end">{{ __('NIM') }}</label>
-                            <div class="col-md-6">
-                                <input id="nim" type="text" class="form-control @error('nim') is-invalid @enderror" name="nim" value="{{ old('nim') }}" required>
-                                @error('nim')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label for="name" class="col-md-4 col-form-label text-md-end">{{ __('Nama Lengkap') }}</label>
-                            <div class="col-md-6">
-                                <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required>
-                                @error('name')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label for="password" class="col-md-4 col-form-label text-md-end">{{ __('Password Baru') }}</label>
-                            <div class="col-md-6">
-                                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required>
-                                @error('password')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
-                        </div>
-
-                        <div class="row mb-3">
-                            <label for="password_confirmation" class="col-md-4 col-form-label text-md-end">{{ __('Konfirmasi Password Baru') }}</label>
-                            <div class="col-md-6">
-                                <input id="password_confirmation" type="password" class="form-control" name="password_confirmation" required>
-                            </div>
-                        </div>
-
-                        <div class="row mb-0">
-                            <div class="col-md-6 offset-md-4">
-                                <button type="submit" class="btn btn-primary">
-                                    {{ __('Reset Password') }}
-                                </button>
-                            </div>
-                        </div>
-                    </form>
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh; background: #fff;">
+    <div class="card shadow" style="width: 450px; border-radius: 20px;">
+        <div class="card-header text-center" style="background: #900; border-top-left-radius: 20px; border-top-right-radius: 20px;">
+            <img src="{{ asset('img/logo-telkom.png') }}" alt="Logo" style="height: 60px; margin-bottom: 10px;">
+            <div class="text-white mt-2" style="font-size: 14px; font-weight: 600; line-height: 1.2;">
+                PUSAT BAHASA<br>
+                Institut Teknologi<br>
+                Telkom Purwokerto
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="POST" action="{{ route('password.email') }}">
+                @csrf
+                <div class="mb-3">
+                    <input id="email" type="email" class="form-control rounded-pill @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required placeholder="Email" autofocus>
+                    @error('email')
+                        <span class="invalid-feedback d-block" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
                 </div>
+                <div class="mb-3">
+                    <input id="nim_nip" type="text" class="form-control rounded-pill @error('nim_nip') is-invalid @enderror" name="nim_nip" value="{{ old('nim_nip') }}" required placeholder="NIM atau NIP">
+                    @error('nim_nip')
+                        <span class="invalid-feedback d-block" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+                <div class="mb-3">
+                    <input id="name" type="text" class="form-control rounded-pill @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required placeholder="Nama Lengkap">
+                    @error('name')
+                        <span class="invalid-feedback d-block" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+                <div class="mb-3">
+                    <input id="password" type="password" class="form-control rounded-pill @error('password') is-invalid @enderror" name="password" required placeholder="Password Baru">
+                    @error('password')
+                        <span class="invalid-feedback d-block" role="alert">
+                            <strong>{{ $message }}</strong>
+                        </span>
+                    @enderror
+                </div>
+                <div class="mb-3">
+                    <input id="password_confirmation" type="password" class="form-control rounded-pill" name="password_confirmation" required placeholder="Konfirmasi Password Baru">
+                </div>
+                <button type="submit" class="btn btn-danger w-100 rounded-pill mb-2" style="font-weight: 600;">RESET PASSWORD</button>
+            </form>
+            <div class="text-center" style="font-size: 14px;">
+                <a href="{{ route('login') }}" class="fw-bold text-danger text-decoration-none">Kembali ke Login</a>
             </div>
         </div>
     </div>

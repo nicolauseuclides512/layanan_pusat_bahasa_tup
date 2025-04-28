@@ -61,7 +61,7 @@ Route::get('/dashboard/admin', [DashboardController::class, 'admin'])->name('das
 // =============================
 // ✅ MANAJEMEN SERTIFIKAT (MAHASISWA)
 // =============================
-Route::middleware('auth')->group(function () {
+Route::middleware('auth:mahasiswa')->group(function () {
     Route::get('/sertifikat', [SertifikatController::class, 'index'])->name('sertifikat.index');
     Route::get('/sertifikat/create', [SertifikatController::class, 'create'])->name('sertifikat.create');
     Route::post('/sertifikat', [SertifikatController::class, 'store'])->name('sertifikat.store');

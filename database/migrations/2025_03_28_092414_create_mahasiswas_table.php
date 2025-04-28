@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('no_hp', 15);
             $table->string('nim', 20)->unique();
+            $table->enum('jenis_kelamin', ['L', 'P'])->after('nim');
             $table->timestamps();
         });
     }

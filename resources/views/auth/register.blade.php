@@ -23,11 +23,15 @@
                     @enderror
                 </div>
                 <div class="mb-3">
-                    <select id="jenis_kelamin" class="form-control rounded-pill @error('jenis_kelamin') is-invalid @enderror" name="jenis_kelamin" required>
-                        <option value="" disabled {{ old('jenis_kelamin') ? '' : 'selected' }}>Pilih Jenis Kelamin</option>
-                        <option value="L" {{ old('jenis_kelamin') == 'L' ? 'selected' : '' }}>Laki-laki</option>
-                        <option value="P" {{ old('jenis_kelamin') == 'P' ? 'selected' : '' }}>Perempuan</option>
-                    </select>
+                    <label class="form-label d-block mb-2">Jenis Kelamin</label>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="jenis_kelamin" id="jkL" value="L" {{ old('jenis_kelamin') == 'L' ? 'checked' : '' }} required>
+                        <label class="form-check-label" for="jkL">Laki-laki</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                        <input class="form-check-input" type="radio" name="jenis_kelamin" id="jkP" value="P" {{ old('jenis_kelamin') == 'P' ? 'checked' : '' }} required>
+                        <label class="form-check-label" for="jkP">Perempuan</label>
+                    </div>
                     @error('jenis_kelamin')
                         <span class="invalid-feedback d-block" role="alert">
                             <strong>{{ $message }}</strong>

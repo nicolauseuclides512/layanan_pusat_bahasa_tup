@@ -142,26 +142,35 @@ class AuthController extends Controller
     public function forgotPassword(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:users,email',
-            'nim' => 'required|string|exists:users,nim',
-            'name' => 'required|string|exists:users,name',
+            'email' => 'required|email',
+            'nim_nip' => 'required|string',
+            'name' => 'required|string',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        $user = User::where('email', $request->email)
-            ->where('nim', $request->nim)
-            ->where('name', $request->name)
+        // Cek ke mahasiswa
+        $mahasiswa = \App\Models\Mahasiswa::where('email', $request->email)
+            ->where('nim', $request->nim_nip)
+            ->where('nama', $request->name)
             ->first();
-
-        if (!$user) {
-            return back()->withErrors(['email' => 'The provided information does not match our records.']);
+        if ($mahasiswa) {
+            $mahasiswa->password = \Illuminate\Support\Facades\Hash::make($request->password);
+            $mahasiswa->save();
+            return redirect()->route('login')->with('success', 'Password berhasil direset sebagai Mahasiswa. Silakan login.');
         }
 
-        $user->update([
-            'password' => Hash::make($request->password)
-        ]);
+        // Cek ke admin
+        $admin = \App\Models\Admin::where('email', $request->email)
+            ->where('nip', $request->nim_nip)
+            ->where('nama', $request->name)
+            ->first();
+        if ($admin) {
+            $admin->password = \Illuminate\Support\Facades\Hash::make($request->password);
+            $admin->save();
+            return redirect()->route('login')->with('success', 'Password berhasil direset sebagai Admin. Silakan login.');
+        }
 
-        return redirect()->route('login')->with('success', 'Password has been reset successfully.');
+        return back()->withErrors(['email' => 'Data tidak ditemukan atau tidak sesuai.']);
     }
 
     public function changePassword(Request $request)
@@ -189,5 +198,10 @@ class AuthController extends Controller
     {
         $programStudis = \App\Models\ProgramStudi::all();
         return view('auth.register', compact('programStudis'));
+    }
+
+    public function showForgotPasswordForm()
+    {
+        return view('auth.forgot-password');
     }
 }
