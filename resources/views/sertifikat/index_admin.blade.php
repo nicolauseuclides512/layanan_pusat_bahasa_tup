@@ -21,6 +21,9 @@
                         <table class="table table-bordered align-middle">
                             <thead class="table-light">
                                 <tr>
+                                    <th>Nama Mahasiswa</th>
+                                    <th>NIM</th>
+                                    <th>Prodi</th>
                                     <th>Nilai Sertifikat</th>
                                     <th>Tanggal Ujian</th>
                                     <th>Tanggal Kadaluarsa</th>
@@ -33,6 +36,9 @@
                             <tbody>
                                 @forelse($sertifikats as $sertifikat)
                                     <tr>
+                                        <td>{{ $sertifikat->mahasiswa->nama ?? '-' }}</td>
+                                        <td>{{ $sertifikat->mahasiswa->nim ?? '-' }}</td>
+                                        <td>{{ $sertifikat->mahasiswa->programStudi->nama_program_studi ?? '-' }}</td>
                                         <td>{{ $sertifikat->nilai }}</td>
                                         <td>{{ $sertifikat->tanggal_ujian ? $sertifikat->tanggal_ujian->format('d/m/Y') : '-' }}</td>
                                         <td>{{ $sertifikat->tanggal_kadaluarsa ? $sertifikat->tanggal_kadaluarsa->format('d/m/Y') : '-' }}</td>
@@ -47,7 +53,6 @@
                                             <a href="{{ route('sertifikat.preview', $sertifikat) }}" class="btn btn-info btn-sm">
                                                 <i class="fas fa-eye"></i> Preview
                                             </a>
-                                            @if($sertifikat->status === 'pending')
                                             <a href="{{ route('sertifikat.edit', $sertifikat) }}" class="btn btn-warning btn-sm">
                                                 <i class="fas fa-edit"></i> Edit
                                             </a>
@@ -58,12 +63,11 @@
                                                     <i class="fas fa-trash"></i> Hapus
                                                 </button>
                                             </form>
-                                            @endif
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="7" class="text-center">Tidak ada sertifikat yang ditemukan.</td>
+                                        <td colspan="10" class="text-center">Tidak ada sertifikat yang ditemukan.</td>
                                     </tr>
                                 @endforelse
                             </tbody>
@@ -74,4 +78,4 @@
         </div>
     </div>
 </div>
-@endsection
+@endsection 

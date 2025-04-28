@@ -221,4 +221,38 @@ class AuthController extends Controller
     {
         return view('auth.change-password');
     }
+
+    public function showLoginAdminForm()
+    {
+        return view('auth.login_admin');
+    }
+
+    public function loginAdmin(Request $request)
+    {
+        $credentials = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required'],
+            'remember' => ['boolean']
+        ]);
+
+        $key = 'login.admin.' . $request->ip();
+        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($key, 5)) {
+            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($key);
+            return back()
+                ->withInput($request->only('email'))
+                ->withErrors(['email' => "Terlalu banyak percobaan login. Silakan coba lagi dalam {$seconds} detik."]);
+        }
+
+        if (Auth::guard('web')->attempt($credentials, $request->remember)) {
+            $request->session()->regenerate();
+            \Illuminate\Support\Facades\RateLimiter::clear($key);
+            \Illuminate\Support\Facades\Log::info('Admin login successful', ['email' => $request->email]);
+            return redirect()->route('dashboard.admin')->with('success', 'Login berhasil!');
+        }
+
+        \Illuminate\Support\Facades\RateLimiter::hit($key);
+        return back()
+            ->withInput($request->only('email'))
+            ->withErrors(['email' => trans('auth.failed')]);
+    }
 }

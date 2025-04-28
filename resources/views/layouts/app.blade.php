@@ -37,45 +37,22 @@
     </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-lg" style="background-color: #900; min-height: 60px;">
-        <div class="container-fluid">
-            <a class="navbar-brand d-flex align-items-center text-white fw-bold" href="#">
-                <img src="{{ asset('img/logo-telkom.png') }}" alt="Logo" style="height: 38px; margin-right: 12px;">
-                <span class="d-none d-md-inline" style="font-size: 20px; letter-spacing: 1px;">PusatBahasa</span>
-            </a>
-            <div class="d-flex align-items-center ms-auto">
-                <span class="text-white fw-semibold me-3" style="font-size: 16px;">
-                    Institut Teknologi Telkom Purwokerto
-                </span>
-                @auth('mahasiswa')
-                <div class="dropdown">
-                    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode(auth('mahasiswa')->user()->nama) }}&background=2d3a4a&color=fff&size=32" alt="avatar" width="32" height="32" class="rounded-circle">
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
-                        <li><a class="dropdown-item" href="{{ route('password.change') }}">Change Password</a></li>
-                    </ul>
-                </div>
-                @endauth
-                @auth('web')
-                <div class="dropdown">
-                    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
-                        <img src="https://ui-avatars.com/api/?name={{ urlencode(auth('web')->user()->nama ?? auth('web')->user()->name) }}&background=2d3a4a&color=fff&size=32" alt="avatar" width="32" height="32" class="rounded-circle">
-                    </a>
-                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
-                        <li><a class="dropdown-item" href="{{ route('password.change') }}">Change Password</a></li>
-                    </ul>
-                </div>
-                @endauth
-            </div>
-        </div>
-    </nav>
+    @if(auth('web')->check())
+        @include('layouts.partials.navbar_admin')
+    @elseif(auth('mahasiswa')->check())
+        @include('layouts.partials.navbar_mahasiswa')
+    @endif
     <div class="d-flex">
         <!-- Sidebar -->
-        <div class="sidebar-custom">
-            @include('layouts.sidebar_mahasiswa')
-        </div>
+        @if(auth('web')->check())
+            <div class="sidebar-custom">
+                @include('layouts.sidebar_admin')
+            </div>
+        @elseif(auth('mahasiswa')->check())
+            <div class="sidebar-custom">
+                @include('layouts.sidebar_mahasiswa')
+            </div>
+        @endif
         <div class="flex-grow-1 p-4">
             @yield('content')
         </div>

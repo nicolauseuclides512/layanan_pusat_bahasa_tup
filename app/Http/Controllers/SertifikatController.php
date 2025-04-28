@@ -13,14 +13,16 @@ class SertifikatController extends Controller
     // 🟢 Menampilkan daftar sertifikat
     public function index()
     {
-        $sertifikats = Sertifikat::with(['user', 'user.programStudi'])
-            ->when(auth()->user()->role === 'mahasiswa', function ($query) {
-                return $query->where('user_id', auth()->id());
-            })
-            ->latest()
-            ->get();
-
-        return view('sertifikat.index', compact('sertifikats'));
+        if (auth('web')->check()) {
+            $sertifikats = \App\Models\Sertifikat::with(['mahasiswa', 'mahasiswa.programStudi'])->latest()->get();
+            return view('sertifikat.index_admin', compact('sertifikats'));
+        } elseif (auth('mahasiswa')->check()) {
+            $mahasiswaId = auth('mahasiswa')->user()->id;
+            $sertifikats = \App\Models\Sertifikat::where('mahasiswa_id', $mahasiswaId)->latest()->get();
+            return view('sertifikat.index', compact('sertifikats'));
+        } else {
+            abort(403);
+        }
     }
 
     // 🟢 Menampilkan form tambah sertifikat
