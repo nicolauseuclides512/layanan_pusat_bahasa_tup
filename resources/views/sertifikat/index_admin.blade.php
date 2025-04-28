@@ -41,7 +41,7 @@
                                         <td>{{ $sertifikat->mahasiswa->programStudi->nama_program_studi ?? '-' }}</td>
                                         <td>{{ $sertifikat->nilai }}</td>
                                         <td>{{ $sertifikat->tanggal_ujian ? $sertifikat->tanggal_ujian->format('d/m/Y') : '-' }}</td>
-                                        <td>{{ $sertifikat->tanggal_kadaluarsa ? $sertifikat->tanggal_kadaluarsa->format('d/m/Y') : '-' }}</td>
+                                        <td>{{ $sertifikat->tanggal_berakhir ? $sertifikat->tanggal_berakhir->format('d/m/Y') : '-' }}</td>
                                         <td>{{ $sertifikat->lembaga_penyelenggara }}</td>
                                         <td>
                                             <span class="badge bg-{{ $sertifikat->status === 'valid' ? 'success' : ($sertifikat->status === 'invalid' ? 'danger' : 'warning') }}">
@@ -78,4 +78,4 @@
         </div>
     </div>
 </div>
-@endsection 
+@endsection

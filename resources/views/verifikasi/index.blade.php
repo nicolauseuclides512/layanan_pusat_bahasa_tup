@@ -35,12 +35,12 @@
                             <tbody>
                                 @forelse($sertifikats as $sertifikat)
                                     <tr>
-                                        <td>{{ $sertifikat->user->name }}</td>
-                                        <td>{{ $sertifikat->user->nim }}</td>
-                                        <td>{{ $sertifikat->user->programStudi->nama }}</td>
+                                        <td>{{ $sertifikat->mahasiswa ? $sertifikat->mahasiswa->nama : '-' }}</td>
+                                        <td>{{ $sertifikat->mahasiswa ? $sertifikat->mahasiswa->nim : '-' }}</td>
+                                        <td>{{ $sertifikat->mahasiswa && $sertifikat->mahasiswa->programStudi ? $sertifikat->mahasiswa->programStudi->nama_program_studi : '-' }}</td>
                                         <td>{{ $sertifikat->nilai }}</td>
-                                        <td>{{ $sertifikat->tanggal_ujian->format('d/m/Y') }}</td>
-                                        <td>{{ $sertifikat->tanggal_kadaluarsa->format('d/m/Y') }}</td>
+                                        <td>{{ $sertifikat->tanggal_ujian ? $sertifikat->tanggal_ujian->format('d/m/Y') : '-' }}</td>
+                                        <td>{{ $sertifikat->tanggal_berakhir ? $sertifikat->tanggal_berakhir->format('d/m/Y') : '-' }}</td>
                                         <td>{{ $sertifikat->lembaga_penyelenggara }}</td>
                                         <td>
                                             <span class="badge bg-{{ $sertifikat->status === 'valid' ? 'success' : ($sertifikat->status === 'invalid' ? 'danger' : 'warning') }}">

@@ -12,7 +12,7 @@ class VerifikasiController extends Controller
     // 🟢 Menampilkan daftar sertifikat untuk diverifikasi
     public function index()
     {
-        $sertifikats = Sertifikat::with(['user', 'user.programStudi'])
+        $sertifikats = Sertifikat::with(['mahasiswa', 'mahasiswa.programStudi'])
             ->where('status', 'pending')
             ->latest()
             ->get();
