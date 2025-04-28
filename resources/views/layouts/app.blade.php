@@ -45,9 +45,29 @@
                 <span class="d-none d-md-inline" style="font-size: 20px; letter-spacing: 1px;">PusatBahasa</span>
             </a>
             <div class="d-flex align-items-center ms-auto">
-                <span class="text-white fw-semibold" style="font-size: 16px;">
+                <span class="text-white fw-semibold me-3" style="font-size: 16px;">
                     Institut Teknologi Telkom Purwokerto
                 </span>
+                @auth('mahasiswa')
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode(auth('mahasiswa')->user()->nama) }}&background=2d3a4a&color=fff&size=32" alt="avatar" width="32" height="32" class="rounded-circle">
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
+                        <li><a class="dropdown-item" href="{{ route('password.change') }}">Change Password</a></li>
+                    </ul>
+                </div>
+                @endauth
+                @auth('web')
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser" data-bs-toggle="dropdown" aria-expanded="false">
+                        <img src="https://ui-avatars.com/api/?name={{ urlencode(auth('web')->user()->nama ?? auth('web')->user()->name) }}&background=2d3a4a&color=fff&size=32" alt="avatar" width="32" height="32" class="rounded-circle">
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownUser">
+                        <li><a class="dropdown-item" href="{{ route('password.change') }}">Change Password</a></li>
+                    </ul>
+                </div>
+                @endauth
             </div>
         </div>
     </nav>

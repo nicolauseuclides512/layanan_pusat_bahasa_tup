@@ -44,7 +44,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
             RateLimiter::clear($key);
             Log::info('Student login successful', ['email' => $request->email]);
-            return redirect()->intended(route('dashboard.mahasiswa'))
+            return redirect()->route('dashboard.mahasiswa')
                 ->with('success', 'Login berhasil!');
         }
 
@@ -53,7 +53,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
             RateLimiter::clear($key);
             Log::info('Admin login successful', ['email' => $request->email]);
-            return redirect()->intended(route('dashboard.admin'))
+            return redirect()->route('dashboard.admin')
                 ->with('success', 'Login berhasil!');
         }
 
@@ -176,22 +176,34 @@ class AuthController extends Controller
     public function changePassword(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:users,email',
+            'email' => 'required|email',
             'current_password' => 'required|string',
             'password' => 'required|string|min:8|confirmed',
         ]);
 
-        $user = User::where('email', $request->email)->first();
-
-        if (!Hash::check($request->current_password, $user->password)) {
-            return back()->withErrors(['current_password' => 'The current password is incorrect.']);
+        // Cek mahasiswa dulu
+        $mahasiswa = \App\Models\Mahasiswa::where('email', $request->email)->first();
+        if ($mahasiswa) {
+            if (!\Illuminate\Support\Facades\Hash::check($request->current_password, $mahasiswa->password)) {
+                return back()->withErrors(['current_password' => 'Password lama salah.']);
+            }
+            $mahasiswa->password = \Illuminate\Support\Facades\Hash::make($request->password);
+            $mahasiswa->save();
+            return back()->with('success', 'Password berhasil diubah.');
         }
 
-        $user->update([
-            'password' => Hash::make($request->password)
-        ]);
+        // Cek admin
+        $admin = \App\Models\Admin::where('email', $request->email)->first();
+        if ($admin) {
+            if (!\Illuminate\Support\Facades\Hash::check($request->current_password, $admin->password)) {
+                return back()->withErrors(['current_password' => 'Password lama salah.']);
+            }
+            $admin->password = \Illuminate\Support\Facades\Hash::make($request->password);
+            $admin->save();
+            return back()->with('success', 'Password berhasil diubah.');
+        }
 
-        return back()->with('success', 'Password has been changed successfully.');
+        return back()->withErrors(['email' => 'User tidak ditemukan.']);
     }
 
     public function showRegisterForm()
@@ -203,5 +215,10 @@ class AuthController extends Controller
     public function showForgotPasswordForm()
     {
         return view('auth.forgot-password');
+    }
+
+    public function showChangePasswordForm()
+    {
+        return view('auth.change-password');
     }
 }

@@ -23,4 +23,9 @@ class Mahasiswa extends Authenticatable
         'password',
         'remember_token',
     ];
+
+    public function programStudi()
+    {
+        return $this->belongsTo(\App\Models\ProgramStudi::class, 'program_studi_id');
+    }
 }

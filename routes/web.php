@@ -65,6 +65,8 @@ Route::middleware('auth:mahasiswa')->group(function () {
     Route::get('/sertifikat', [SertifikatController::class, 'index'])->name('sertifikat.index');
     Route::get('/sertifikat/create', [SertifikatController::class, 'create'])->name('sertifikat.create');
     Route::post('/sertifikat', [SertifikatController::class, 'store'])->name('sertifikat.store');
+    Route::get('change-password', [AuthController::class, 'showChangePasswordForm'])->name('password.change');
+    Route::post('change-password', [AuthController::class, 'changePassword'])->name('password.update');
 });
 
 // =============================
