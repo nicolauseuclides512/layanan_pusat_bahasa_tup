@@ -34,15 +34,11 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::middleware('role:mahasiswa')->group(function () {
-        Route::resource('sertifikat', SertifikatController::class);
-        Route::get('/sertifikat/{sertifikat}/preview', [SertifikatController::class, 'preview'])->name('sertifikat.preview');
-    });
+    Route::resource('sertifikat', SertifikatController::class);
+    Route::get('/sertifikat/{sertifikat}/preview', [SertifikatController::class, 'preview'])->name('sertifikat.preview');
 
-    Route::middleware('role:admin')->group(function () {
-        Route::resource('verifikasi', VerifikasiController::class);
-        Route::get('verifikasi/{sertifikat}/preview', [VerifikasiController::class, 'preview'])->name('verifikasi.preview');
-    });
+    Route::resource('verifikasi', VerifikasiController::class);
+    Route::get('verifikasi/{sertifikat}/preview', [VerifikasiController::class, 'preview'])->name('verifikasi.preview');
 });
 
 // =============================

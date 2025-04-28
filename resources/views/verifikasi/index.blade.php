@@ -49,7 +49,7 @@
                                         </td>
                                         <td>{{ $sertifikat->alasan_penolakan ?? '-' }}</td>
                                         <td>
-                                            <a href="{{ route('verifikasi.preview', $sertifikat) }}" class="btn btn-info btn-sm" target="_blank">
+                                            <a href="{{ route('verifikasi.preview', $sertifikat) }}" class="btn btn-info btn-sm">
                                                 <i class="fas fa-eye"></i> Preview
                                             </a>
                                             @if($sertifikat->status === 'pending')
