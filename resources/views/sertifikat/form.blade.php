@@ -34,7 +34,7 @@
                         <div class="row mb-3">
                             <label for="nilai" class="col-md-4 col-form-label text-md-end">{{ __('Nilai Sertifikat') }}</label>
                             <div class="col-md-6">
-                                <input id="nilai" type="number" class="form-control @error('nilai') is-invalid @enderror" name="nilai" value="{{ old('nilai', $sertifikat->nilai ?? '') }}" required min="0" max="100">
+                                <input id="nilai" type="number" class="form-control @error('nilai') is-invalid @enderror" name="nilai" value="{{ old('nilai', $sertifikat->nilai ?? '') }}" required min="0" max="700">
                                 @error('nilai')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

@@ -9,15 +9,16 @@ class Sertifikat extends Model
 {
     protected $fillable = [
         'mahasiswa_id',
-        'nama_sertifikat',
-        'lembaga_penyelenggara',
+        'nilai',
+        'nama_dokumen',
+        'file_path',
         'tanggal_ujian',
         'tanggal_berakhir',
+        'lembaga_penyelenggara',
         'status',
-        'file_path',
         'alasan_penolakan',
         'verified_at',
-        'verified_by'
+        'verified_by',
     ];
 
     protected $casts = [

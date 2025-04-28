@@ -36,20 +36,22 @@ class SertifikatController extends Controller
     {
         $request->validate([
             'gambar_sertifikat' => 'required|image|mimes:jpeg,png,jpg|max:2048',
-            'nilai' => 'required|numeric|min:0|max:100',
+            'nilai' => 'required|numeric|min:0|max:700',
             'tanggal_ujian' => 'required|date',
             'tanggal_kadaluarsa' => 'required|date|after:tanggal_ujian',
             'lembaga_penyelenggara' => 'required|string|max:255',
         ]);
 
         $path = $request->file('gambar_sertifikat')->store('sertifikats', 'public');
+        $mahasiswaId = auth('mahasiswa')->user()->id;
 
         Sertifikat::create([
-            'user_id' => auth()->id(),
-            'gambar_sertifikat' => $path,
+            'mahasiswa_id' => $mahasiswaId,
+            'nama_dokumen' => $request->file('gambar_sertifikat')->getClientOriginalName(),
+            'file_path' => $path,
             'nilai' => $request->nilai,
             'tanggal_ujian' => $request->tanggal_ujian,
-            'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa,
+            'tanggal_berakhir' => $request->tanggal_kadaluarsa,
             'lembaga_penyelenggara' => $request->lembaga_penyelenggara,
             'status' => 'pending',
         ]);

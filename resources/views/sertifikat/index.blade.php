@@ -21,10 +21,12 @@
                         <table class="table table-bordered align-middle">
                             <thead class="table-light">
                                 <tr>
-                                    <th>Nilai Sertifikat</th>
+                                    <th>Nama Dokumen</th>
+                                    <th>Lembaga</th>
+                                    <th>Nilai</th>
+                                    <th>Program Studi</th>
                                     <th>Tanggal Ujian</th>
                                     <th>Tanggal Kadaluarsa</th>
-                                    <th>Lembaga Penyelenggara</th>
                                     <th>Status</th>
                                     <th>Alasan Penolakan</th>
                                     <th class="text-center">Aksi</th>
@@ -33,10 +35,12 @@
                             <tbody>
                                 @forelse($sertifikats as $sertifikat)
                                     <tr>
-                                        <td>{{ $sertifikat->nilai }}</td>
-                                        <td>{{ $sertifikat->tanggal_ujian ? $sertifikat->tanggal_ujian->format('d/m/Y') : '-' }}</td>
-                                        <td>{{ $sertifikat->tanggal_kadaluarsa ? $sertifikat->tanggal_kadaluarsa->format('d/m/Y') : '-' }}</td>
+                                        <td>{{ $sertifikat->nama_dokumen }}</td>
                                         <td>{{ $sertifikat->lembaga_penyelenggara }}</td>
+                                        <td>{{ $sertifikat->nilai ?? '-' }}</td>
+                                        <td>{{ $sertifikat->mahasiswa->programStudi->nama ?? '-' }}</td>
+                                        <td>{{ $sertifikat->tanggal_ujian->format('d F Y') }}</td>
+                                        <td>{{ $sertifikat->tanggal_kadaluarsa ? $sertifikat->tanggal_kadaluarsa->format('d/m/Y') : '-' }}</td>
                                         <td>
                                             <span class="badge bg-{{ $sertifikat->status === 'valid' ? 'success' : ($sertifikat->status === 'invalid' ? 'danger' : 'warning') }}">
                                                 {{ ucfirst($sertifikat->status) }}
@@ -44,21 +48,23 @@
                                         </td>
                                         <td>{{ $sertifikat->alasan_penolakan ?? '-' }}</td>
                                         <td class="text-center">
-                                            <a href="{{ route('sertifikat.preview', $sertifikat) }}" class="btn btn-info btn-sm">
-                                                <i class="fas fa-eye"></i> Preview
-                                            </a>
-                                            @if($sertifikat->status === 'pending')
-                                            <a href="{{ route('sertifikat.edit', $sertifikat) }}" class="btn btn-warning btn-sm">
-                                                <i class="fas fa-edit"></i> Edit
-                                            </a>
-                                            <form action="{{ route('sertifikat.destroy', $sertifikat) }}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Apakah Anda yakin ingin menghapus sertifikat ini?')">
-                                                    <i class="fas fa-trash"></i> Hapus
-                                                </button>
-                                            </form>
-                                            @endif
+                                            <div class="d-flex gap-2">
+                                                <a href="{{ route('sertifikat.preview', $sertifikat) }}" class="btn btn-sm btn-outline-info" title="Preview Sertifikat">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                @if($sertifikat->status === 'pending')
+                                                    <a href="{{ route('sertifikat.edit', $sertifikat) }}" class="btn btn-sm btn-outline-warning" title="Edit Sertifikat">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                    <form action="{{ route('sertifikat.destroy', $sertifikat) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus sertifikat ini?');">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus Sertifikat">
+                                                            <i class="fas fa-trash"></i>
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            </div>
                                         </td>
                                     </tr>
                                 @empty
