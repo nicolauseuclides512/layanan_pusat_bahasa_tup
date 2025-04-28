@@ -24,7 +24,6 @@
                                     <th>Nama Dokumen</th>
                                     <th>Lembaga</th>
                                     <th>Nilai</th>
-                                    <th>Program Studi</th>
                                     <th>Tanggal Ujian</th>
                                     <th>Tanggal Kadaluarsa</th>
                                     <th>Status</th>
@@ -38,9 +37,8 @@
                                         <td>{{ $sertifikat->nama_dokumen }}</td>
                                         <td>{{ $sertifikat->lembaga_penyelenggara }}</td>
                                         <td>{{ $sertifikat->nilai ?? '-' }}</td>
-                                        <td>{{ $sertifikat->mahasiswa->programStudi->nama ?? '-' }}</td>
-                                        <td>{{ $sertifikat->tanggal_ujian->format('d F Y') }}</td>
-                                        <td>{{ $sertifikat->tanggal_kadaluarsa ? $sertifikat->tanggal_kadaluarsa->format('d/m/Y') : '-' }}</td>
+                                        <td>{{ $sertifikat->tanggal_ujian ? $sertifikat->tanggal_ujian->format('d F Y') : '-' }}</td>
+                                        <td>{{ $sertifikat->tanggal_berakhir ? $sertifikat->tanggal_berakhir->format('d F Y') : '-' }}</td>
                                         <td>
                                             <span class="badge bg-{{ $sertifikat->status === 'valid' ? 'success' : ($sertifikat->status === 'invalid' ? 'danger' : 'warning') }}">
                                                 {{ ucfirst($sertifikat->status) }}

@@ -46,7 +46,7 @@
                         <div class="row mb-3">
                             <label for="tanggal_ujian" class="col-md-4 col-form-label text-md-end">{{ __('Tanggal Ujian') }}</label>
                             <div class="col-md-6">
-                                <input id="tanggal_ujian" type="date" class="form-control @error('tanggal_ujian') is-invalid @enderror" name="tanggal_ujian" value="{{ old('tanggal_ujian', isset($sertifikat) ? $sertifikat->tanggal_ujian->format('Y-m-d') : '') }}" required>
+                                <input id="tanggal_ujian" type="date" class="form-control @error('tanggal_ujian') is-invalid @enderror" name="tanggal_ujian" value="{{ old('tanggal_ujian', isset($sertifikat) && $sertifikat->tanggal_ujian ? $sertifikat->tanggal_ujian->format('Y-m-d') : '') }}" required>
                                 @error('tanggal_ujian')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
@@ -58,7 +58,7 @@
                         <div class="row mb-3">
                             <label for="tanggal_kadaluarsa" class="col-md-4 col-form-label text-md-end">{{ __('Tanggal Kadaluarsa') }}</label>
                             <div class="col-md-6">
-                                <input id="tanggal_kadaluarsa" type="date" class="form-control @error('tanggal_kadaluarsa') is-invalid @enderror" name="tanggal_kadaluarsa" value="{{ old('tanggal_kadaluarsa', isset($sertifikat) ? $sertifikat->tanggal_kadaluarsa->format('Y-m-d') : '') }}" required>
+                                <input id="tanggal_kadaluarsa" type="date" class="form-control @error('tanggal_kadaluarsa') is-invalid @enderror" name="tanggal_kadaluarsa" value="{{ old('tanggal_kadaluarsa', isset($sertifikat) && $sertifikat->tanggal_berakhir ? $sertifikat->tanggal_berakhir->format('Y-m-d') : '') }}" required>
                                 @error('tanggal_kadaluarsa')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>

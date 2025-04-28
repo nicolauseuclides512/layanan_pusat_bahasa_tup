@@ -91,18 +91,40 @@ class SertifikatController extends Controller
 
     public function destroy(Sertifikat $sertifikat)
     {
-        if ($sertifikat->status !== 'pending') {
-            return back()->withErrors(['status' => 'Sertifikat yang sudah divalidasi tidak dapat dihapus.']);
+        // Cek apakah user adalah pemilik sertifikat
+        if (auth('mahasiswa')->check() && $sertifikat->mahasiswa_id !== auth('mahasiswa')->id()) {
+            abort(403, 'Anda tidak memiliki akses untuk menghapus sertifikat ini.');
         }
 
-        Storage::disk('public')->delete($sertifikat->gambar_sertifikat);
-        $sertifikat->delete();
+        // Cek apakah sertifikat masih bisa dihapus
+        if ($sertifikat->status !== 'pending') {
+            return redirect()->route('sertifikat.index')->with('error', 'Sertifikat yang sudah divalidasi tidak dapat dihapus.');
+        }
 
-        return redirect()->route('sertifikat.index')->with('success', 'Sertifikat berhasil dihapus.');
+        try {
+            // Hapus file dari storage jika ada file_path
+            if (!empty($sertifikat->file_path)) {
+                \Storage::disk('public')->delete($sertifikat->file_path);
+            }
+            $sertifikat->delete();
+            return redirect()->route('sertifikat.index')->with('success', 'Sertifikat berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->route('sertifikat.index')->with('error', 'Terjadi kesalahan saat menghapus sertifikat.');
+        }
     }
 
     public function preview(Sertifikat $sertifikat)
     {
         return view('sertifikat.preview', compact('sertifikat'));
+    }
+
+    public function edit($id)
+    {
+        $sertifikat = Sertifikat::findOrFail($id);
+        // Pastikan hanya pemilik sertifikat yang bisa mengedit
+        if (auth('mahasiswa')->check() && $sertifikat->mahasiswa_id !== auth('mahasiswa')->id()) {
+            abort(403, 'Unauthorized');
+        }
+        return view('sertifikat.edit', compact('sertifikat'));
     }
 }
