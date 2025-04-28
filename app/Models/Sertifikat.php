@@ -17,6 +17,7 @@ class Sertifikat extends Model
         'lembaga_penyelenggara',
         'status',
         'alasan_penolakan',
+        'status_nde',
         'verified_at',
         'verified_by',
     ];

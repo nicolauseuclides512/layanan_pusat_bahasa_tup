@@ -16,6 +16,20 @@
                         </div>
                     @endif
 
+                    <form action="{{ route('verifikasi.index') }}" method="GET" class="mb-3">
+                        <div class="row align-items-end">
+                            <div class="col-md-4">
+                                <label for="status" class="form-label">Filter Status</label>
+                                <select name="status" id="status" class="form-select" onchange="this.form.submit()">
+                                    <option value="all" {{ $status === 'all' ? 'selected' : '' }}>Semua Status</option>
+                                    <option value="pending" {{ $status === 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="approved" {{ $status === 'approved' ? 'selected' : '' }}>Disetujui</option>
+                                    <option value="rejected" {{ $status === 'rejected' ? 'selected' : '' }}>Ditolak</option>
+                                </select>
+                            </div>
+                        </div>
+                    </form>
+
                     <div class="table-responsive">
                         <table class="table table-bordered">
                             <thead>
@@ -75,15 +89,15 @@
                                                             <div class="mb-3">
                                                                 <label class="form-label">Status</label>
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="radio" name="status" id="valid{{ $sertifikat->id }}" value="valid" required>
-                                                                    <label class="form-check-label" for="valid{{ $sertifikat->id }}">
-                                                                        Valid
+                                                                    <input class="form-check-input" type="radio" name="status" id="approved{{ $sertifikat->id }}" value="approved" required>
+                                                                    <label class="form-check-label" for="approved{{ $sertifikat->id }}">
+                                                                        Disetujui
                                                                     </label>
                                                                 </div>
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="radio" name="status" id="invalid{{ $sertifikat->id }}" value="invalid" required>
-                                                                    <label class="form-check-label" for="invalid{{ $sertifikat->id }}">
-                                                                        Tidak Valid
+                                                                    <input class="form-check-input" type="radio" name="status" id="rejected{{ $sertifikat->id }}" value="rejected" required>
+                                                                    <label class="form-check-label" for="rejected{{ $sertifikat->id }}">
+                                                                        Ditolak
                                                                     </label>
                                                                 </div>
                                                             </div>

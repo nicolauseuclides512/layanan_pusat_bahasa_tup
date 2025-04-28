@@ -37,7 +37,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('sertifikat', SertifikatController::class);
     Route::get('/sertifikat/{sertifikat}/preview', [SertifikatController::class, 'preview'])->name('sertifikat.preview');
 
-    Route::resource('verifikasi', VerifikasiController::class);
+    Route::resource('verifikasi', VerifikasiController::class)->parameters(['verifikasi' => 'sertifikat']);
     Route::get('verifikasi/{sertifikat}/preview', [VerifikasiController::class, 'preview'])->name('verifikasi.preview');
 });
 
@@ -75,7 +75,7 @@ Route::middleware('auth:mahasiswa')->group(function () {
 // =============================
 Route::middleware('auth')->group(function () {
     Route::get('/verifikasi', [VerifikasiController::class, 'index'])->name('verifikasi.index');
-    Route::post('/verifikasi/{sertifikat}', [VerifikasiController::class, 'updateStatus'])->name('verifikasi.update');
+    // Route::post('/verifikasi/{sertifikat}', [VerifikasiController::class, 'update'])->name('verifikasi.update');
 });
 
 // =============================
@@ -84,4 +84,8 @@ Route::middleware('auth')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::post('/laporan/export', [LaporanController::class, 'export'])->name('laporan.export');
+});
+
+Route::middleware(['auth:web'])->group(function () {
+    Route::put('/sertifikat/{sertifikat}/update-nde', [SertifikatController::class, 'updateNde'])->name('sertifikat.update-nde');
 });

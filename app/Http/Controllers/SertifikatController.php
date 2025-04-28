@@ -127,4 +127,17 @@ class SertifikatController extends Controller
         }
         return view('sertifikat.edit', compact('sertifikat'));
     }
+
+    public function updateNde(Request $request, Sertifikat $sertifikat)
+    {
+        $request->validate([
+            'status_nde' => 'required|in:belum_terkirim,terkirim'
+        ]);
+
+        $sertifikat->update([
+            'status_nde' => $request->status_nde
+        ]);
+
+        return redirect()->route('sertifikat.index')->with('success', 'Status NDE berhasil diperbarui.');
+    }
 }

@@ -10,28 +10,28 @@ use App\Notifications\SertifikatStatusUpdated;
 class VerifikasiController extends Controller
 {
     // 🟢 Menampilkan daftar sertifikat untuk diverifikasi
-    public function index()
+    public function index(Request $request)
     {
-        $sertifikats = Sertifikat::with(['mahasiswa', 'mahasiswa.programStudi'])
-            ->where('status', 'pending')
-            ->latest()
-            ->get();
-
-        return view('verifikasi.index', compact('sertifikats'));
+        $status = $request->get('status', 'all');
+        $query = Sertifikat::with(['mahasiswa', 'mahasiswa.programStudi'])->latest();
+        if (in_array($status, ['pending', 'approved', 'rejected'])) {
+            $query->where('status', $status);
+        }
+        $sertifikats = $query->get();
+        return view('verifikasi.index', compact('sertifikats', 'status'));
     }
 
     // 🟢 Proses verifikasi sertifikat
     public function update(Request $request, Sertifikat $sertifikat)
     {
         $request->validate([
-            'status' => 'required|in:valid,invalid',
-            'alasan_penolakan' => 'required_if:status,invalid|nullable|string|max:255',
+            'status' => 'required|in:approved,rejected',
+            'alasan_penolakan' => 'required_if:status,rejected|nullable|string|max:255',
         ]);
 
-        $sertifikat->update([
-            'status' => $request->status,
-            'alasan_penolakan' => $request->alasan_penolakan,
-        ]);
+        $sertifikat->status = (string) $request->status;
+        $sertifikat->alasan_penolakan = $request->alasan_penolakan;
+        $sertifikat->save();
 
         return redirect()->route('verifikasi.index')->with('success', 'Status sertifikat berhasil diperbarui.');
     }
