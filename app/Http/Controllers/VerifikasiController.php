@@ -24,16 +24,27 @@ class VerifikasiController extends Controller
     // 🟢 Proses verifikasi sertifikat
     public function update(Request $request, Sertifikat $sertifikat)
     {
-        $request->validate([
-            'status' => 'required|in:approved,rejected',
-            'alasan_penolakan' => 'required_if:status,rejected|nullable|string|max:255',
-        ]);
+        try {
+            $request->validate([
+                'status' => 'required|in:approved,rejected',
+                'alasan_penolakan' => 'required_if:status,rejected|nullable|string|max:255|not_in:-',
+            ], [
+                'alasan_penolakan.required_if' => 'Alasan penolakan harus diisi jika status ditolak',
+                'alasan_penolakan.not_in' => 'Alasan penolakan tidak boleh hanya berisi tanda strip (-)',
+            ]);
 
-        $sertifikat->status = (string) $request->status;
-        $sertifikat->alasan_penolakan = $request->alasan_penolakan;
-        $sertifikat->save();
+            $sertifikat->status = (string) $request->status;
+            $sertifikat->alasan_penolakan = $request->status === 'approved' ? '-' : $request->alasan_penolakan;
+            $sertifikat->save();
 
-        return redirect()->route('verifikasi.index')->with('success', 'Status sertifikat berhasil diperbarui.');
+            return redirect()->route('verifikasi.index')->with('success', 'Status sertifikat berhasil diperbarui.');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return back()
+                ->withInput()
+                ->withErrors($e->validator)
+                ->with('showModal', $sertifikat->id)
+                ->with('error', 'Validasi gagal. Silakan periksa kembali input Anda.');
+        }
     }
 
     public function preview(Sertifikat $sertifikat)

@@ -16,6 +16,12 @@
                         </div>
                     @endif
 
+                    @if(session('error'))
+                        <div class="alert alert-danger" role="alert">
+                            {{ session('error') }}
+                        </div>
+                    @endif
+
                     <form action="{{ route('verifikasi.index') }}" method="GET" class="mb-3">
                         <div class="row align-items-end">
                             <div class="col-md-4">
@@ -57,7 +63,7 @@
                                         <td>{{ $sertifikat->tanggal_berakhir ? $sertifikat->tanggal_berakhir->format('d/m/Y') : '-' }}</td>
                                         <td>{{ $sertifikat->lembaga_penyelenggara }}</td>
                                         <td>
-                                            <span class="badge bg-{{ $sertifikat->status === 'valid' ? 'success' : ($sertifikat->status === 'invalid' ? 'danger' : 'warning') }}">
+                                            <span class="badge bg-{{ $sertifikat->status === 'approved' ? 'success' : ($sertifikat->status === 'rejected' ? 'danger' : 'warning') }}">
                                                 {{ ucfirst($sertifikat->status) }}
                                             </span>
                                         </td>
@@ -86,24 +92,39 @@
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
+                                                            @if($errors->any() && session('showModal') == $sertifikat->id)
+                                                                <div class="alert alert-danger">
+                                                                    <ul class="mb-0">
+                                                                        @foreach($errors->all() as $error)
+                                                                            <li>{{ $error }}</li>
+                                                                        @endforeach
+                                                                    </ul>
+                                                                </div>
+                                                            @endif
                                                             <div class="mb-3">
                                                                 <label class="form-label">Status</label>
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="radio" name="status" id="approved{{ $sertifikat->id }}" value="approved" required>
+                                                                    <input class="form-check-input" type="radio" name="status" id="approved{{ $sertifikat->id }}" value="approved" required {{ old('status') === 'approved' ? 'checked' : '' }}>
                                                                     <label class="form-check-label" for="approved{{ $sertifikat->id }}">
                                                                         Disetujui
                                                                     </label>
                                                                 </div>
                                                                 <div class="form-check">
-                                                                    <input class="form-check-input" type="radio" name="status" id="rejected{{ $sertifikat->id }}" value="rejected" required>
+                                                                    <input class="form-check-input" type="radio" name="status" id="rejected{{ $sertifikat->id }}" value="rejected" required {{ old('status') === 'rejected' ? 'checked' : '' }}>
                                                                     <label class="form-check-label" for="rejected{{ $sertifikat->id }}">
                                                                         Ditolak
                                                                     </label>
                                                                 </div>
                                                             </div>
                                                             <div class="mb-3">
-                                                                <label for="alasan_penolakan{{ $sertifikat->id }}" class="form-label">Alasan Penolakan</label>
-                                                                <textarea class="form-control" id="alasan_penolakan{{ $sertifikat->id }}" name="alasan_penolakan" rows="3"></textarea>
+                                                                <label for="alasan_penolakan{{ $sertifikat->id }}" class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
+                                                                <textarea class="form-control @error('alasan_penolakan') is-invalid @enderror" id="alasan_penolakan{{ $sertifikat->id }}" name="alasan_penolakan" rows="3">{{ old('alasan_penolakan') }}</textarea>
+                                                                @error('alasan_penolakan')
+                                                                    <div class="invalid-feedback">
+                                                                        {{ $message }}
+                                                                    </div>
+                                                                @enderror
+                                                                <small class="text-muted">Alasan penolakan harus diisi jika status ditolak</small>
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">
@@ -128,4 +149,23 @@
         </div>
     </div>
 </div>
+@endsection
+
+@section('scripts')
+<script src="{{ asset('js/verifikasi.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the modal ID from PHP session
+    const modalId = "{{ session('showModal') }}";
+    
+    // If there's a modal ID, show the modal
+    if (modalId) {
+        const modalElement = document.getElementById('verifikasiModal' + modalId);
+        if (modalElement) {
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        }
+    }
+});
+</script>
 @endsection

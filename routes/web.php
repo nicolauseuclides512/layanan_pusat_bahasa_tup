@@ -76,7 +76,7 @@ Route::middleware('auth:mahasiswa')->group(function () {
 // =============================
 Route::middleware('auth')->group(function () {
     Route::get('/verifikasi', [VerifikasiController::class, 'index'])->name('verifikasi.index');
-    // Route::post('/verifikasi/{sertifikat}', [VerifikasiController::class, 'update'])->name('verifikasi.update');
+    Route::put('/verifikasi/{sertifikat}', [VerifikasiController::class, 'update'])->name('verifikasi.update');
 });
 
 // =============================
