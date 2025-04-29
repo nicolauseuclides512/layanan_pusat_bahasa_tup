@@ -38,4 +38,28 @@ class MahasiswaController extends Controller
 
         return redirect()->route('login')->with('success', 'Registrasi berhasil! Silakan login.');
     }
+
+    public function index(Request $request)
+    {
+        $query = Mahasiswa::with('programStudi');
+
+        // Filter berdasarkan program studi
+        if ($request->has('prodi') && $request->prodi !== 'all') {
+            $query->where('program_studi_id', $request->prodi);
+        }
+
+        // Filter berdasarkan pencarian
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                  ->orWhere('nim', 'like', "%{$search}%");
+            });
+        }
+
+        $mahasiswa = $query->latest()->get();
+        $programStudi = \App\Models\ProgramStudi::all();
+
+        return view('mahasiswa.index', compact('mahasiswa', 'programStudi'));
+    }
 }

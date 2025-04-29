@@ -34,6 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::post('change-password', [AuthController::class, 'changePassword'])->name('password.update');
 
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/mahasiswa', [MahasiswaController::class, 'index'])->name('mahasiswa.index');
 
     Route::resource('sertifikat', SertifikatController::class);
     Route::get('/sertifikat/{sertifikat}/preview', [SertifikatController::class, 'preview'])->name('sertifikat.preview');
