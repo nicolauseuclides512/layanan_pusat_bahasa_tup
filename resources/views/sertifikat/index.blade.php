@@ -40,7 +40,7 @@
                                         <td>{{ $sertifikat->tanggal_ujian ? $sertifikat->tanggal_ujian->format('d F Y') : '-' }}</td>
                                         <td>{{ $sertifikat->tanggal_berakhir ? $sertifikat->tanggal_berakhir->format('d F Y') : '-' }}</td>
                                         <td>
-                                            <span class="badge bg-{{ $sertifikat->status === 'valid' ? 'success' : ($sertifikat->status === 'invalid' ? 'danger' : 'warning') }}">
+                                            <span class="badge bg-{{ $sertifikat->status === 'approved' ? 'success' : ($sertifikat->status === 'rejected' ? 'danger' : 'warning') }}">
                                                 {{ ucfirst($sertifikat->status) }}
                                             </span>
                                         </td>

@@ -121,10 +121,8 @@ class SertifikatController extends Controller
         return view('sertifikat.preview', compact('sertifikat'));
     }
 
-    public function edit($id)
+    public function edit(Sertifikat $sertifikat)
     {
-        $sertifikat = Sertifikat::findOrFail($id);
-        
         // Check if the user is the owner of the certificate
         if ($sertifikat->mahasiswa_id !== auth('mahasiswa')->id()) {
             abort(403, 'Unauthorized');
