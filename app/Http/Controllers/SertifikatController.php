@@ -61,29 +61,32 @@ class SertifikatController extends Controller
 
     public function update(Request $request, Sertifikat $sertifikat)
     {
-        if ($sertifikat->status !== 'pending') {
-            return back()->withErrors(['status' => 'Sertifikat yang sudah divalidasi tidak dapat diubah.']);
+        if ($sertifikat->status === 'approved') {
+            return back()->withErrors(['status' => 'Sertifikat yang sudah disetujui tidak dapat diubah.']);
         }
 
         $request->validate([
             'gambar_sertifikat' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            'nilai' => 'required|numeric|min:0|max:100',
+            'nilai' => 'required|numeric|min:0|max:700',
             'tanggal_ujian' => 'required|date',
             'tanggal_kadaluarsa' => 'required|date|after:tanggal_ujian',
             'lembaga_penyelenggara' => 'required|string|max:255',
         ]);
 
         if ($request->hasFile('gambar_sertifikat')) {
-            Storage::disk('public')->delete($sertifikat->gambar_sertifikat);
+            Storage::disk('public')->delete($sertifikat->file_path);
             $path = $request->file('gambar_sertifikat')->store('sertifikats', 'public');
-            $sertifikat->gambar_sertifikat = $path;
+            $sertifikat->file_path = $path;
+            $sertifikat->nama_dokumen = $request->file('gambar_sertifikat')->getClientOriginalName();
         }
 
         $sertifikat->update([
             'nilai' => $request->nilai,
             'tanggal_ujian' => $request->tanggal_ujian,
-            'tanggal_kadaluarsa' => $request->tanggal_kadaluarsa,
+            'tanggal_berakhir' => $request->tanggal_kadaluarsa,
             'lembaga_penyelenggara' => $request->lembaga_penyelenggara,
+            'status' => 'pending',
+            'alasan_penolakan' => null
         ]);
 
         return redirect()->route('sertifikat.index')->with('success', 'Sertifikat berhasil diperbarui.');
@@ -121,10 +124,17 @@ class SertifikatController extends Controller
     public function edit($id)
     {
         $sertifikat = Sertifikat::findOrFail($id);
-        // Pastikan hanya pemilik sertifikat yang bisa mengedit
-        if (auth('mahasiswa')->check() && $sertifikat->mahasiswa_id !== auth('mahasiswa')->id()) {
+        
+        // Check if the user is the owner of the certificate
+        if ($sertifikat->mahasiswa_id !== auth('mahasiswa')->id()) {
             abort(403, 'Unauthorized');
         }
+
+        // Check if the certificate can be edited
+        if ($sertifikat->status === 'approved') {
+            return back()->withErrors(['status' => 'Sertifikat yang sudah disetujui tidak dapat diubah.']);
+        }
+
         return view('sertifikat.edit', compact('sertifikat'));
     }
 

@@ -50,17 +50,19 @@
                                                 <a href="{{ route('sertifikat.preview', $sertifikat) }}" class="btn btn-sm btn-outline-info" title="Preview Sertifikat">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                @if($sertifikat->status === 'pending')
+                                                @if($sertifikat->status === 'pending' || $sertifikat->status === 'rejected')
                                                     <a href="{{ route('sertifikat.edit', $sertifikat) }}" class="btn btn-sm btn-outline-warning" title="Edit Sertifikat">
                                                         <i class="fas fa-edit"></i>
                                                     </a>
-                                                    <form action="{{ route('sertifikat.destroy', $sertifikat) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus sertifikat ini?');">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus Sertifikat">
-                                                            <i class="fas fa-trash"></i>
-                                                        </button>
-                                                    </form>
+                                                    @if($sertifikat->status === 'pending')
+                                                        <form action="{{ route('sertifikat.destroy', $sertifikat) }}" method="POST" class="d-inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus sertifikat ini?');">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-sm btn-outline-danger" title="Hapus Sertifikat">
+                                                                <i class="fas fa-trash"></i>
+                                                            </button>
+                                                        </form>
+                                                    @endif
                                                 @endif
                                             </div>
                                         </td>
