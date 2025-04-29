@@ -4,11 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 
 class EprtKhusus extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     protected $table = 'eprt_khusus';
 
@@ -21,7 +22,8 @@ class EprtKhusus extends Model
 
     protected $casts = [
         'tanggal_buka' => 'datetime',
-        'tanggal_tutup' => 'datetime'
+        'tanggal_tutup' => 'datetime',
+        'deleted_at' => 'datetime'
     ];
 
     protected static function boot()
@@ -59,6 +61,7 @@ class EprtKhusus extends Model
         
         // Update status pendaftaran yang sudah lewat waktu tutup
         self::where('status', 'aktif')
+            ->whereNull('deleted_at')
             ->where(function($query) use ($now) {
                 $query->whereRaw("CONCAT(DATE(tanggal_tutup), ' ', TIME(tanggal_tutup)) < ?", [$now->format('Y-m-d H:i:s')]);
             })
@@ -66,6 +69,7 @@ class EprtKhusus extends Model
 
         // Update status pendaftaran yang masih dalam periode aktif
         self::where('status', 'nonaktif')
+            ->whereNull('deleted_at')
             ->where(function($query) use ($now) {
                 $query->whereRaw("CONCAT(DATE(tanggal_buka), ' ', TIME(tanggal_buka)) <= ?", [$now->format('Y-m-d H:i:s')])
                       ->whereRaw("CONCAT(DATE(tanggal_tutup), ' ', TIME(tanggal_tutup)) >= ?", [$now->format('Y-m-d H:i:s')]);

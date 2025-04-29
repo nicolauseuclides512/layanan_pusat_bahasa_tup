@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Sertifikat;
+use App\Models\ProgramStudi;
 use Illuminate\Support\Facades\Log;
 use App\Notifications\SertifikatStatusUpdated;
 
@@ -13,26 +14,39 @@ class VerifikasiController extends Controller
     public function index(Request $request)
     {
         $status = $request->get('status', 'all');
-        $query = Sertifikat::with(['mahasiswa', 'mahasiswa.programStudi'])->latest();
+        $showDeleted = $request->get('show_deleted', false);
+
+        // Query dasar dengan withTrashed() untuk melihat data yang sudah dihapus
+        $query = Sertifikat::with(['mahasiswa', 'mahasiswa.programStudi']);
         
+        if ($showDeleted) {
+            $query->withTrashed();
+        }
+
+        // Filter berdasarkan status
         if (in_array($status, ['pending', 'approved', 'rejected'])) {
             $query->where('status', $status);
         }
 
+        // Filter berdasarkan status NDE
         if ($request->has('status_nde') && $request->status_nde !== 'all') {
             $query->where('status_nde', $request->status_nde);
         }
 
+        // Filter berdasarkan program studi
         if ($request->has('prodi') && $request->prodi !== 'all') {
             $query->whereHas('mahasiswa.programStudi', function($q) use ($request) {
                 $q->where('id', $request->prodi);
             });
         }
 
-        $sertifikats = $query->get();
-        $programStudi = \App\Models\ProgramStudi::all();
+        $sertifikats = $query->latest()->get();
+        $programStudi = ProgramStudi::all();
 
-        return view('verifikasi.index', compact('sertifikats', 'status', 'programStudi'));
+        // Hitung jumlah sertifikat yang dihapus
+        $deletedCount = Sertifikat::onlyTrashed()->count();
+
+        return view('verifikasi.index', compact('sertifikats', 'status', 'programStudi', 'showDeleted', 'deletedCount'));
     }
 
     // 🟢 Proses verifikasi sertifikat
@@ -70,5 +84,20 @@ class VerifikasiController extends Controller
     public function preview(Sertifikat $sertifikat)
     {
         return view('verifikasi.preview', compact('sertifikat'));
+    }
+
+    // 🟢 Mengembalikan sertifikat yang sudah dihapus
+    public function restore($id)
+    {
+        try {
+            $sertifikat = Sertifikat::withTrashed()->findOrFail($id);
+            $sertifikat->restore();
+
+            return redirect()->route('verifikasi.index')
+                ->with('success', 'Sertifikat berhasil dikembalikan.');
+        } catch (\Exception $e) {
+            return redirect()->route('verifikasi.index')
+                ->with('error', 'Gagal mengembalikan sertifikat.');
+        }
     }
 }
