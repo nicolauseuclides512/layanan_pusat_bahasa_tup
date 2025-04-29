@@ -33,8 +33,7 @@ class TestMahasiswaSeeder extends Seeder
                     'no_hp' => '08' . rand(1000000000, 9999999999),
                     'nim' => $nim,
                     'program_studi_id' => $programStudis->random()->id,
-                    'status' => 'active',
-                    'email_verified_at' => now()
+                    'jenis_kelamin' => $i % 2 == 0 ? 'L' : 'P'
                 ]);
 
                 $credentials[] = [

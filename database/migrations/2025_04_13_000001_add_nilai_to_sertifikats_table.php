@@ -9,14 +9,14 @@ return new class extends Migration
     public function up()
     {
         Schema::table('sertifikats', function (Blueprint $table) {
-            $table->enum('status_nde', ['belum_terkirim', 'terkirim'])->default('belum_terkirim')->after('status');
+            $table->integer('nilai')->after('file_path');
         });
     }
 
     public function down()
     {
         Schema::table('sertifikats', function (Blueprint $table) {
-            $table->dropColumn('status_nde');
+            $table->dropColumn('nilai');
         });
     }
 }; 
