@@ -78,7 +78,7 @@
 
                     <!-- Content -->
                     @forelse($sertifikats as $sertifikat)
-                        <div class="row py-2 border-bottom align-items-center">
+                        <div class="row py-2 border-bottom">
                             <div class="col-2">{{ $sertifikat->mahasiswa ? $sertifikat->mahasiswa->nama : '-' }}</div>
                             <div class="col-1">{{ $sertifikat->mahasiswa ? $sertifikat->mahasiswa->nim : '-' }}</div>
                             <div class="col-2">{{ $sertifikat->mahasiswa && $sertifikat->mahasiswa->programStudi ? $sertifikat->mahasiswa->programStudi->nama_program_studi : '-' }}</div>
@@ -119,6 +119,8 @@
                             </div>
                         </div>
                     @endforelse
+
+                    <x-pagination-control :items="$sertifikats" />
                 </div>
             </div>
         </div>

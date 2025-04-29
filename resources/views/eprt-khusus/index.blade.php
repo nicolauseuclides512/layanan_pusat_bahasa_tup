@@ -5,9 +5,9 @@
     <div class="row mb-4">
         <div class="col">
             <div class="d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">Daftar Mahasiswa</h4>
-                <a href="{{ route('mahasiswa.create') }}" class="btn btn-primary">
-                    <i class="fas fa-plus"></i> Tambah Mahasiswa
+                <h4 class="mb-0">List EPrT Khusus</h4>
+                <a href="{{ route('eprt-khusus.create') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Tambah EPrT Khusus
                 </a>
             </div>
         </div>
@@ -22,36 +22,52 @@
 
     <div class="card">
         <div class="card-body">
+            <!-- Filter Form -->
+            <form method="GET" class="mb-4">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label for="status" class="form-label">Filter Status</label>
+                        <select name="status" id="status" class="form-select">
+                            <option value="all" {{ request('status') == 'all' ? 'selected' : '' }}>Semua Status</option>
+                            <option value="aktif" {{ request('status') == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                            <option value="nonaktif" {{ request('status') == 'nonaktif' ? 'selected' : '' }}>Nonaktif</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-filter"></i> Filter
+                        </button>
+                    </div>
+                </div>
+            </form>
+
             <div class="table-responsive">
                 <table class="table table-hover align-middle">
                     <thead class="table-light">
                         <tr>
-                            <th scope="col" class="text-center" style="width: 5%">No</th>
-                            <th scope="col" style="width: 20%">Nama</th>
-                            <th scope="col" style="width: 15%">NIM</th>
-                            <th scope="col" style="width: 20%">Program Studi</th>
-                            <th scope="col" style="width: 15%">Email</th>
-                            <th scope="col" style="width: 15%">No. HP</th>
-                            <th scope="col" class="text-center" style="width: 10%">Aksi</th>
+                            <th>No</th>
+                            <th>Nama Pendaftaran</th>
+                            <th>Tanggal Buka</th>
+                            <th>Tanggal Tutup</th>
+                            <th>Status</th>
+                            <th class="text-center">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @forelse($mahasiswas as $index => $mhs)
+                        @forelse($registrations as $index => $registration)
                             <tr>
-                                <td class="text-center">{{ $mahasiswas->firstItem() + $index }}</td>
-                                <td>{{ $mhs->nama }}</td>
-                                <td>{{ $mhs->nim }}</td>
-                                <td>{{ $mhs->programStudi->nama }}</td>
-                                <td>{{ $mhs->email }}</td>
-                                <td>{{ $mhs->no_hp }}</td>
+                                <td>{{ $registrations->firstItem() + $index }}</td>
+                                <td>{{ $registration->nama_pendaftaran }}</td>
+                                <td>{{ $registration->tanggal_buka->format('d/m/Y H:i') }}</td>
+                                <td>{{ $registration->tanggal_tutup->format('d/m/Y H:i') }}</td>
                                 <td>
+                                    <span class="badge bg-{{ $registration->status === 'aktif' ? 'success' : 'danger' }}">
+                                        {{ ucfirst($registration->status) }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
                                     <div class="d-flex justify-content-center gap-2">
-                                        <a href="{{ route('mahasiswa.show', $mhs->id) }}" 
-                                           class="btn btn-sm btn-info" 
-                                           title="Detail">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="{{ route('mahasiswa.edit', $mhs->id) }}" 
+                                        <a href="{{ route('eprt-khusus.edit', $registration->id) }}" 
                                            class="btn btn-sm btn-warning" 
                                            title="Edit">
                                             <i class="fas fa-edit"></i>
@@ -59,11 +75,11 @@
                                         <button type="button" 
                                                 class="btn btn-sm btn-danger" 
                                                 title="Hapus"
-                                                onclick="confirmDelete('{{ $mhs->id }}')">
+                                                onclick="confirmDelete('{{ $registration->id }}')">
                                             <i class="fas fa-trash"></i>
                                         </button>
-                                        <form id="delete-form-{{ $mhs->id }}" 
-                                              action="{{ route('mahasiswa.destroy', $mhs->id) }}" 
+                                        <form id="delete-form-{{ $registration->id }}" 
+                                              action="{{ route('eprt-khusus.destroy', $registration->id) }}" 
                                               method="POST" 
                                               class="d-none">
                                             @csrf
@@ -74,12 +90,12 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center py-5">
+                                <td colspan="6" class="text-center py-5">
                                     <img src="{{ asset('images/no-data.png') }}" 
                                          alt="No Data" 
                                          class="img-fluid mb-3" 
                                          style="max-width: 200px; opacity: 0.5">
-                                    <p class="text-muted mb-0">Belum ada data mahasiswa</p>
+                                    <p class="text-muted mb-0">Belum ada data EPrT Khusus</p>
                                 </td>
                             </tr>
                         @endforelse
@@ -87,7 +103,7 @@
                 </table>
             </div>
 
-            <x-pagination-control :items="$mahasiswas" />
+            <x-pagination-control :items="$registrations" />
         </div>
     </div>
 </div>
@@ -98,7 +114,7 @@
 function confirmDelete(id) {
     Swal.fire({
         title: 'Apakah Anda yakin?',
-        text: "Data mahasiswa akan dihapus permanen!",
+        text: "Data EPrT Khusus akan dihapus permanen!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#dc3545',
@@ -125,42 +141,5 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 3000);
 });
 </script>
-
-<style>
-.pagination {
-    margin-bottom: 0;
-}
-.page-item:first-child .page-link {
-    border-top-left-radius: 0.375rem;
-    border-bottom-left-radius: 0.375rem;
-}
-.page-item:last-child .page-link {
-    border-top-right-radius: 0.375rem;
-    border-bottom-right-radius: 0.375rem;
-}
-.page-link {
-    padding: 0.5rem 0.75rem;
-    color: #0d6efd;
-    background-color: #fff;
-    border: 1px solid #dee2e6;
-}
-.page-link:hover {
-    color: #0a58ca;
-    background-color: #e9ecef;
-    border-color: #dee2e6;
-}
-.page-item.active .page-link {
-    z-index: 3;
-    color: #fff;
-    background-color: #0d6efd;
-    border-color: #0d6efd;
-}
-.page-item.disabled .page-link {
-    color: #6c757d;
-    pointer-events: none;
-    background-color: #fff;
-    border-color: #dee2e6;
-}
-</style>
 @endpush
 @endsection 

@@ -48,6 +48,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('eprt-khusus', EprtKhususController::class)->parameters([
         'eprt-khusus' => 'eprtKhusus'
     ]);
+
+    Route::resource('mahasiswa', MahasiswaController::class);
 });
 
 // =============================

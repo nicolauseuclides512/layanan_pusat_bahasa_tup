@@ -9,13 +9,37 @@ use Illuminate\Support\Facades\DB;
 
 class EprtKhususController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        // Update status semua pendaftaran sebelum menampilkan data
+        // Update status semua registrasi
         EprtKhusus::updateAllStatus();
+
+        $query = EprtKhusus::latest();
+
+        // Filter berdasarkan status
+        if ($request->filled('status') && $request->status != 'all') {
+            $query->where('status', $request->status);
+        }
+
+        // Handle pagination
+        $perPage = $request->get('per_page', 20);
+        $registrations = $perPage == 'all' 
+            ? $query->get() 
+            : $query->paginate($perPage)->withQueryString();
+
+        if ($perPage == 'all') {
+            $page = $request->get('page', 1);
+            $total = $registrations->count();
+            $registrations = new \Illuminate\Pagination\LengthAwarePaginator(
+                $registrations->forPage($page, $total),
+                $total,
+                $total,
+                $page,
+                ['path' => $request->url(), 'query' => $request->query()]
+            );
+        }
         
-        $eprtKhusus = EprtKhusus::latest()->get();
-        return view('eprt_khusus.index', compact('eprtKhusus'));
+        return view('eprt-khusus.index', compact('registrations'));
     }
 
     public function create()

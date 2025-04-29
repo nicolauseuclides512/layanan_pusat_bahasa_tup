@@ -5,14 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Mahasiswa extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'nama',
-        'email', 
+        'email',
         'password',
         'no_hp',
         'nim',
@@ -24,8 +25,18 @@ class Mahasiswa extends Authenticatable
         'remember_token',
     ];
 
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+    ];
+
     public function programStudi()
     {
-        return $this->belongsTo(\App\Models\ProgramStudi::class, 'program_studi_id');
+        return $this->belongsTo(ProgramStudi::class);
+    }
+
+    public function sertifikat()
+    {
+        return $this->hasMany(Sertifikat::class);
     }
 }

@@ -40,10 +40,25 @@ class VerifikasiController extends Controller
             });
         }
 
-        $sertifikats = $query->latest()->get();
-        $programStudi = ProgramStudi::all();
+        // Handle pagination
+        $perPage = $request->get('per_page', 20);
+        $sertifikats = $perPage == 'all' 
+            ? $query->latest()->get() 
+            : $query->latest()->paginate($perPage)->withQueryString();
 
-        // Hitung jumlah sertifikat yang dihapus
+        if ($perPage == 'all') {
+            $page = $request->get('page', 1);
+            $total = $sertifikats->count();
+            $sertifikats = new \Illuminate\Pagination\LengthAwarePaginator(
+                $sertifikats->forPage($page, $total),
+                $total,
+                $total,
+                $page,
+                ['path' => $request->url(), 'query' => $request->query()]
+            );
+        }
+
+        $programStudi = ProgramStudi::all();
         $deletedCount = Sertifikat::onlyTrashed()->count();
 
         return view('verifikasi.index', compact('sertifikats', 'status', 'programStudi', 'showDeleted', 'deletedCount'));
