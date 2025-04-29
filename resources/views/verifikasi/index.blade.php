@@ -3,7 +3,7 @@
 @section('content')
 <div class="container-fluid">
     <div class="row justify-content-center">
-        <div class="col-md-12">
+        <div class="col-12">
             <div class="card">
                 <div class="card-header">
                     <h5 class="mb-0">{{ __('List Sertifikat') }}</h5>
@@ -22,7 +22,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('verifikasi.index') }}" method="GET" class="mb-3">
+                    <form action="{{ route('verifikasi.index') }}" method="GET" class="mb-4">
                         <div class="row align-items-end">
                             <div class="col-md-3">
                                 <label for="status" class="form-label">Filter Status</label>
@@ -63,172 +63,93 @@
                         </div>
                     </form>
 
-                    <div class="table-responsive">
-                        <table class="table table-bordered align-middle">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>{{ __('Nama Mahasiswa') }}</th>
-                                    <th>{{ __('NIM') }}</th>
-                                    <th>{{ __('Prodi') }}</th>
-                                    <th>{{ __('Nilai Sertifikat') }}</th>
-                                    <th>{{ __('Tanggal Ujian') }}</th>
-                                    <th>{{ __('Tanggal Kadaluarsa') }}</th>
-                                    <th>{{ __('Lembaga Penyelenggara') }}</th>
-                                    <th>{{ __('Status') }}</th>
-                                    <th>{{ __('Status NDE') }}</th>
-                                    <th>{{ __('Alasan Penolakan') }}</th>
-                                    <th class="text-center">{{ __('Aksi') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($sertifikats as $sertifikat)
-                                    <tr>
-                                        <td>{{ $sertifikat->mahasiswa ? $sertifikat->mahasiswa->nama : '-' }}</td>
-                                        <td>{{ $sertifikat->mahasiswa ? $sertifikat->mahasiswa->nim : '-' }}</td>
-                                        <td>{{ $sertifikat->mahasiswa && $sertifikat->mahasiswa->programStudi ? $sertifikat->mahasiswa->programStudi->nama_program_studi : '-' }}</td>
-                                        <td>{{ $sertifikat->nilai }}</td>
-                                        <td>{{ $sertifikat->tanggal_ujian ? $sertifikat->tanggal_ujian->format('d/m/Y') : '-' }}</td>
-                                        <td>{{ $sertifikat->tanggal_berakhir ? $sertifikat->tanggal_berakhir->format('d/m/Y') : '-' }}</td>
-                                        <td>{{ $sertifikat->lembaga_penyelenggara }}</td>
-                                        <td>
-                                            <span class="badge bg-{{ $sertifikat->status === 'approved' ? 'success' : ($sertifikat->status === 'rejected' ? 'danger' : 'warning') }}">
-                                                {{ ucfirst($sertifikat->status) }}
-                                            </span>
-                                        </td>
-                                        <td>
-                                            @if($sertifikat->status === 'approved')
-                                                <span class="badge bg-{{ $sertifikat->status_nde === 'terkirim' ? 'success' : 'warning' }}">
-                                                    {{ $sertifikat->status_nde === 'terkirim' ? 'Terkirim' : 'Belum Terkirim' }}
-                                                </span>
-                                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#updateNdeModal{{ $sertifikat->id }}">
-                                                    <i class="fas fa-edit"></i>
-                                                </button>
-                                            @else
-                                                -
-                                            @endif
-                                        </td>
-                                        <td>{{ $sertifikat->alasan_penolakan ?? '-' }}</td>
-                                        <td class="text-center">
-                                            <div class="d-flex gap-2 justify-content-center">
-                                                <a href="{{ route('verifikasi.preview', $sertifikat) }}" class="btn btn-info btn-sm" title="Preview Sertifikat">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                                @if($sertifikat->status === 'pending')
-                                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#verifikasiModal{{ $sertifikat->id }}" title="Verifikasi Sertifikat">
-                                                        <i class="fas fa-check-circle"></i>
-                                                    </button>
-                                                @endif
-                                            </div>
-                                        </td>
-                                    </tr>
-
-                                    @if($sertifikat->status === 'pending')
-                                        <div class="modal fade" id="verifikasiModal{{ $sertifikat->id }}" tabindex="-1" aria-labelledby="verifikasiModalLabel{{ $sertifikat->id }}" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <form action="{{ route('verifikasi.update', $sertifikat) }}" method="POST">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="verifikasiModalLabel{{ $sertifikat->id }}">Verifikasi Sertifikat</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            @if($errors->any() && session('showModal') == $sertifikat->id)
-                                                                <div class="alert alert-danger">
-                                                                    <ul class="mb-0">
-                                                                        @foreach($errors->all() as $error)
-                                                                            <li>{{ $error }}</li>
-                                                                        @endforeach
-                                                                    </ul>
-                                                                </div>
-                                                            @endif
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Status</label>
-                                                                <div class="form-check">
-                                                                    <input class="form-check-input" type="radio" name="status" id="approved{{ $sertifikat->id }}" value="approved" required {{ old('status') === 'approved' ? 'checked' : '' }}>
-                                                                    <label class="form-check-label" for="approved{{ $sertifikat->id }}">
-                                                                        Disetujui
-                                                                    </label>
-                                                                </div>
-                                                                <div class="form-check">
-                                                                    <input class="form-check-input" type="radio" name="status" id="rejected{{ $sertifikat->id }}" value="rejected" required {{ old('status') === 'rejected' ? 'checked' : '' }}>
-                                                                    <label class="form-check-label" for="rejected{{ $sertifikat->id }}">
-                                                                        Ditolak
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                            <div class="mb-3">
-                                                                <label for="alasan_penolakan{{ $sertifikat->id }}" class="form-label">Alasan Penolakan <span class="text-danger">*</span></label>
-                                                                <textarea class="form-control @error('alasan_penolakan') is-invalid @enderror" id="alasan_penolakan{{ $sertifikat->id }}" name="alasan_penolakan" rows="3">{{ old('alasan_penolakan') }}</textarea>
-                                                                @error('alasan_penolakan')
-                                                                    <div class="invalid-feedback">
-                                                                        {{ $message }}
-                                                                    </div>
-                                                                @enderror
-                                                                <small class="text-muted">Alasan penolakan harus diisi jika status ditolak</small>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                            <button type="submit" class="btn btn-primary">Simpan</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endif
-
-                                    @if($sertifikat->status === 'approved')
-                                        <div class="modal fade" id="updateNdeModal{{ $sertifikat->id }}" tabindex="-1" aria-labelledby="updateNdeModalLabel{{ $sertifikat->id }}" aria-hidden="true">
-                                            <div class="modal-dialog">
-                                                <div class="modal-content">
-                                                    <form action="{{ route('sertifikat.update-nde', $sertifikat) }}" method="POST">
-                                                        @csrf
-                                                        @method('PUT')
-                                                        <div class="modal-header">
-                                                            <h5 class="modal-title" id="updateNdeModalLabel{{ $sertifikat->id }}">Update Status NDE</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                        </div>
-                                                        <div class="modal-body">
-                                                            <div class="mb-3">
-                                                                <label class="form-label">Status NDE</label>
-                                                                <div class="form-check">
-                                                                    <input class="form-check-input" type="radio" name="status_nde" id="belum_terkirim{{ $sertifikat->id }}" value="belum_terkirim" {{ $sertifikat->status_nde === 'belum_terkirim' ? 'checked' : '' }} required>
-                                                                    <label class="form-check-label" for="belum_terkirim{{ $sertifikat->id }}">
-                                                                        Belum Terkirim
-                                                                    </label>
-                                                                </div>
-                                                                <div class="form-check">
-                                                                    <input class="form-check-input" type="radio" name="status_nde" id="terkirim{{ $sertifikat->id }}" value="terkirim" {{ $sertifikat->status_nde === 'terkirim' ? 'checked' : '' }} required>
-                                                                    <label class="form-check-label" for="terkirim{{ $sertifikat->id }}">
-                                                                        Terkirim
-                                                                    </label>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                                            <button type="submit" class="btn btn-primary">Simpan</button>
-                                                        </div>
-                                                    </form>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    @endif
-                                @empty
-                                    <tr>
-                                        <td colspan="11" class="text-center">{{ __('Tidak ada sertifikat yang ditemukan.') }}</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                    <!-- Header -->
+                    <div class="row bg-light py-2 mb-2 rounded">
+                        <div class="col-2 fw-bold">Nama Mahasiswa</div>
+                        <div class="col-1 fw-bold">NIM</div>
+                        <div class="col-2 fw-bold">Prodi</div>
+                        <div class="col-1 fw-bold">Nilai</div>
+                        <div class="col-1 fw-bold">Tanggal Ujian</div>
+                        <div class="col-1 fw-bold">Kadaluarsa</div>
+                        <div class="col-2 fw-bold">Lembaga</div>
+                        <div class="col-1 fw-bold">Status</div>
+                        <div class="col-1 fw-bold">Status NDE</div>
                     </div>
+
+                    <!-- Content -->
+                    @forelse($sertifikats as $sertifikat)
+                        <div class="row py-2 border-bottom align-items-center">
+                            <div class="col-2">{{ $sertifikat->mahasiswa ? $sertifikat->mahasiswa->nama : '-' }}</div>
+                            <div class="col-1">{{ $sertifikat->mahasiswa ? $sertifikat->mahasiswa->nim : '-' }}</div>
+                            <div class="col-2">{{ $sertifikat->mahasiswa && $sertifikat->mahasiswa->programStudi ? $sertifikat->mahasiswa->programStudi->nama_program_studi : '-' }}</div>
+                            <div class="col-1">{{ $sertifikat->nilai }}</div>
+                            <div class="col-1">{{ $sertifikat->tanggal_ujian ? $sertifikat->tanggal_ujian->format('d/m/Y') : '-' }}</div>
+                            <div class="col-1">{{ $sertifikat->tanggal_berakhir ? $sertifikat->tanggal_berakhir->format('d/m/Y') : '-' }}</div>
+                            <div class="col-2">{{ $sertifikat->lembaga_penyelenggara }}</div>
+                            <div class="col-1">
+                                <span class="badge bg-{{ $sertifikat->status === 'approved' ? 'success' : ($sertifikat->status === 'rejected' ? 'danger' : 'warning') }}">
+                                    {{ ucfirst($sertifikat->status) }}
+                                </span>
+                            </div>
+                            <div class="col-1">
+                                @if($sertifikat->status === 'approved')
+                                    <span class="badge bg-{{ $sertifikat->status_nde === 'terkirim' ? 'success' : 'warning' }}">
+                                        {{ $sertifikat->status_nde === 'terkirim' ? 'Terkirim' : 'Belum Terkirim' }}
+                                    </span>
+                                    <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#updateNdeModal{{ $sertifikat->id }}">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                @else
+                                    -
+                                @endif
+                            </div>
+                        </div>
+
+                        @if($sertifikat->status === 'pending')
+                            @include('verifikasi.partials.verifikasi_modal', ['sertifikat' => $sertifikat])
+                        @endif
+
+                        @if($sertifikat->status === 'approved')
+                            @include('verifikasi.partials.update_nde_modal', ['sertifikat' => $sertifikat])
+                        @endif
+                    @empty
+                        <div class="row">
+                            <div class="col-12 text-center py-4">
+                                {{ __('Tidak ada sertifikat yang ditemukan.') }}
+                            </div>
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .col-1, .col-2 {
+        padding: 0.5rem;
+    }
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+    .border-bottom {
+        border-bottom: 1px solid #dee2e6;
+    }
+    .rounded {
+        border-radius: 0.25rem;
+    }
+    .badge {
+        font-size: 0.75rem;
+    }
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+</style>
 @endsection
 
 @section('scripts')

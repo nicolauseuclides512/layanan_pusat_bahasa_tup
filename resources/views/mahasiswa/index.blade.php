@@ -16,7 +16,7 @@
                         </div>
                     @endif
 
-                    <form action="{{ route('mahasiswa.index') }}" method="GET" class="mb-3">
+                    <form action="{{ route('mahasiswa.index') }}" method="GET" class="mb-4">
                         <div class="row align-items-end">
                             <div class="col-md-4">
                                 <label for="search" class="form-label">Cari Mahasiswa</label>
@@ -44,39 +44,55 @@
                         </div>
                     </form>
 
-                    <div class="table-responsive">
-                        <table class="table table-bordered align-middle" style="width: 100%;">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>{{ __('No') }}</th>
-                                    <th>{{ __('Nama') }}</th>
-                                    <th>{{ __('NIM') }}</th>
-                                    <th>{{ __('Program Studi') }}</th>
-                                    <th>{{ __('Email') }}</th>
-                                    <th>{{ __('Tanggal Registrasi') }}</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @forelse($mahasiswa as $index => $mhs)
-                                    <tr>
-                                        <td>{{ $index + 1 }}</td>
-                                        <td>{{ $mhs->nama }}</td>
-                                        <td>{{ $mhs->nim }}</td>
-                                        <td>{{ $mhs->programStudi->nama_program_studi ?? '-' }}</td>
-                                        <td>{{ $mhs->email }}</td>
-                                        <td>{{ $mhs->created_at->format('d/m/Y H:i') }}</td>
-                                    </tr>
-                                @empty
-                                    <tr>
-                                        <td colspan="6" class="text-center">{{ __('Tidak ada data mahasiswa yang ditemukan.') }}</td>
-                                    </tr>
-                                @endforelse
-                            </tbody>
-                        </table>
+                    <!-- Header -->
+                    <div class="row bg-light py-2 mb-2 rounded">
+                        <div class="col-1 text-center fw-bold">No</div>
+                        <div class="col-3 fw-bold">Nama</div>
+                        <div class="col-2 fw-bold">NIM</div>
+                        <div class="col-2 fw-bold">Program Studi</div>
+                        <div class="col-3 fw-bold">Email</div>
+                        <div class="col-1 fw-bold">Tanggal</div>
                     </div>
+
+                    <!-- Content -->
+                    @forelse($mahasiswa as $index => $mhs)
+                        <div class="row py-2 border-bottom align-items-center">
+                            <div class="col-1 text-center">{{ $index + 1 }}</div>
+                            <div class="col-3">{{ $mhs->nama }}</div>
+                            <div class="col-2">{{ $mhs->nim }}</div>
+                            <div class="col-2">{{ $mhs->programStudi->nama_program_studi ?? '-' }}</div>
+                            <div class="col-3">{{ $mhs->email }}</div>
+                            <div class="col-1">{{ $mhs->created_at->format('d/m/Y') }}</div>
+                        </div>
+                    @empty
+                        <div class="row">
+                            <div class="col-12 text-center py-4">
+                                {{ __('Tidak ada data mahasiswa yang ditemukan.') }}
+                            </div>
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+<style>
+    .row {
+        margin-left: 0;
+        margin-right: 0;
+    }
+    .col-1, .col-2, .col-3 {
+        padding: 0.5rem;
+    }
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+    .border-bottom {
+        border-bottom: 1px solid #dee2e6;
+    }
+    .rounded {
+        border-radius: 0.25rem;
+    }
+</style>
 @endsection 
