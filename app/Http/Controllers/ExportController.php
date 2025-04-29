@@ -47,6 +47,7 @@ class ExportController extends Controller
         $sheet->setCellValue('I1', 'Status');
         $sheet->setCellValue('J1', 'Status NDE');
         $sheet->setCellValue('K1', 'Alasan Penolakan');
+        $sheet->setCellValue('L1', 'Link Sertifikat');
 
         // Isi data
         $row = 2;
@@ -62,11 +63,18 @@ class ExportController extends Controller
             $sheet->setCellValue('I' . $row, ucfirst($sertifikat->status));
             $sheet->setCellValue('J' . $row, $sertifikat->status_nde ? ucfirst(str_replace('_', ' ', $sertifikat->status_nde)) : '-');
             $sheet->setCellValue('K' . $row, $sertifikat->alasan_penolakan ?? '-');
+            if ($sertifikat->file_path) {
+                $baseUrl = rtrim(config('app.url'), '/');
+                $url = $baseUrl . '/storage/sertifikats/' . basename($sertifikat->file_path);
+                $sheet->setCellValue('L' . $row, $url);
+            } else {
+                $sheet->setCellValue('L' . $row, '-');
+            }
             $row++;
         }
 
         // Auto size columns
-        foreach (range('A', 'K') as $col) {
+        foreach (range('A', 'L') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
