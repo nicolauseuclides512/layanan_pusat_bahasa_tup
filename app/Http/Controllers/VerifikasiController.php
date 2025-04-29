@@ -14,11 +14,25 @@ class VerifikasiController extends Controller
     {
         $status = $request->get('status', 'all');
         $query = Sertifikat::with(['mahasiswa', 'mahasiswa.programStudi'])->latest();
+        
         if (in_array($status, ['pending', 'approved', 'rejected'])) {
             $query->where('status', $status);
         }
+
+        if ($request->has('status_nde') && $request->status_nde !== 'all') {
+            $query->where('status_nde', $request->status_nde);
+        }
+
+        if ($request->has('prodi') && $request->prodi !== 'all') {
+            $query->whereHas('mahasiswa.programStudi', function($q) use ($request) {
+                $q->where('id', $request->prodi);
+            });
+        }
+
         $sertifikats = $query->get();
-        return view('verifikasi.index', compact('sertifikats', 'status'));
+        $programStudi = \App\Models\ProgramStudi::all();
+
+        return view('verifikasi.index', compact('sertifikats', 'status', 'programStudi'));
     }
 
     // 🟢 Proses verifikasi sertifikat

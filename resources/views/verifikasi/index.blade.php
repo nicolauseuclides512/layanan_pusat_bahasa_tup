@@ -24,14 +24,41 @@
 
                     <form action="{{ route('verifikasi.index') }}" method="GET" class="mb-3">
                         <div class="row align-items-end">
-                            <div class="col-md-4">
+                            <div class="col-md-3">
                                 <label for="status" class="form-label">Filter Status</label>
-                                <select name="status" id="status" class="form-select" onchange="this.form.submit()">
+                                <select name="status" id="status" class="form-select">
                                     <option value="all" {{ $status === 'all' ? 'selected' : '' }}>Semua Status</option>
                                     <option value="pending" {{ $status === 'pending' ? 'selected' : '' }}>Pending</option>
                                     <option value="approved" {{ $status === 'approved' ? 'selected' : '' }}>Disetujui</option>
                                     <option value="rejected" {{ $status === 'rejected' ? 'selected' : '' }}>Ditolak</option>
                                 </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="status_nde" class="form-label">Filter Status NDE</label>
+                                <select name="status_nde" id="status_nde" class="form-select">
+                                    <option value="all" {{ request('status_nde') === 'all' ? 'selected' : '' }}>Semua Status NDE</option>
+                                    <option value="belum_terkirim" {{ request('status_nde') === 'belum_terkirim' ? 'selected' : '' }}>Belum Terkirim</option>
+                                    <option value="terkirim" {{ request('status_nde') === 'terkirim' ? 'selected' : '' }}>Terkirim</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label for="prodi" class="form-label">Filter Program Studi</label>
+                                <select name="prodi" id="prodi" class="form-select">
+                                    <option value="all" {{ request('prodi') === 'all' ? 'selected' : '' }}>Semua Program Studi</option>
+                                    @foreach($programStudi as $ps)
+                                        <option value="{{ $ps->id }}" {{ request('prodi') == $ps->id ? 'selected' : '' }}>
+                                            {{ $ps->nama_program_studi }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <button type="submit" class="btn btn-primary">
+                                    <i class="fas fa-filter"></i> Filter
+                                </button>
+                                <a href="{{ route('export.sertifikat', request()->query()) }}" class="btn btn-success">
+                                    <i class="fas fa-file-excel"></i> Export Excel
+                                </a>
                             </div>
                         </div>
                     </form>

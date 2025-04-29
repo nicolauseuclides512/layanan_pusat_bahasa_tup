@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SertifikatController;
 use App\Http\Controllers\VerifikasiController;
 use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\ExportController;
 
 // 🟢 Halaman Utama (Redirect ke Login)
 Route::get('/', function () {
@@ -40,6 +41,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('verifikasi', VerifikasiController::class)->parameters(['verifikasi' => 'sertifikat']);
     Route::get('verifikasi/{sertifikat}/preview', [VerifikasiController::class, 'preview'])->name('verifikasi.preview');
     Route::put('/sertifikat/{sertifikat}/update-nde', [SertifikatController::class, 'updateNde'])->name('sertifikat.update-nde');
+    Route::get('/export/sertifikat', [ExportController::class, 'exportSertifikat'])->name('export.sertifikat');
 });
 
 // =============================
