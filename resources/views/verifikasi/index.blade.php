@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="container">
+<div class="container-fluid">
     <div class="row justify-content-center">
         <div class="col-md-12">
             <div class="card">
@@ -37,8 +37,8 @@
                     </form>
 
                     <div class="table-responsive">
-                        <table class="table table-bordered">
-                            <thead>
+                        <table class="table table-bordered align-middle">
+                            <thead class="table-light">
                                 <tr>
                                     <th>{{ __('Nama Mahasiswa') }}</th>
                                     <th>{{ __('NIM') }}</th>
@@ -50,7 +50,7 @@
                                     <th>{{ __('Status') }}</th>
                                     <th>{{ __('Status NDE') }}</th>
                                     <th>{{ __('Alasan Penolakan') }}</th>
-                                    <th>{{ __('Aksi') }}</th>
+                                    <th class="text-center">{{ __('Aksi') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -81,15 +81,17 @@
                                             @endif
                                         </td>
                                         <td>{{ $sertifikat->alasan_penolakan ?? '-' }}</td>
-                                        <td>
-                                            <a href="{{ route('verifikasi.preview', $sertifikat) }}" class="btn btn-info btn-sm" title="Preview Sertifikat">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                            @if($sertifikat->status === 'pending')
-                                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#verifikasiModal{{ $sertifikat->id }}" title="Verifikasi Sertifikat">
-                                                    <i class="fas fa-check-circle"></i>
-                                                </button>
-                                            @endif
+                                        <td class="text-center">
+                                            <div class="d-flex gap-2 justify-content-center">
+                                                <a href="{{ route('verifikasi.preview', $sertifikat) }}" class="btn btn-info btn-sm" title="Preview Sertifikat">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                @if($sertifikat->status === 'pending')
+                                                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#verifikasiModal{{ $sertifikat->id }}" title="Verifikasi Sertifikat">
+                                                        <i class="fas fa-check-circle"></i>
+                                                    </button>
+                                                @endif
+                                            </div>
                                         </td>
                                     </tr>
 
@@ -189,7 +191,7 @@
                                     @endif
                                 @empty
                                     <tr>
-                                        <td colspan="10" class="text-center">{{ __('Tidak ada sertifikat yang ditemukan.') }}</td>
+                                        <td colspan="11" class="text-center">{{ __('Tidak ada sertifikat yang ditemukan.') }}</td>
                                     </tr>
                                 @endforelse
                             </tbody>
