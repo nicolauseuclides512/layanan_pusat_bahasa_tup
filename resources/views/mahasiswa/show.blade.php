@@ -36,7 +36,7 @@
                         </tr>
                         <tr>
                             <td><strong>Program Studi</strong></td>
-                            <td>: {{ $mahasiswa->programStudi->nama }}</td>
+                            <td>: {{ $mahasiswa->programStudi->nama_program_studi }}</td>
                         </tr>
                         <tr>
                             <td><strong>Email</strong></td>

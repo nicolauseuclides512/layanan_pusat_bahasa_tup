@@ -41,7 +41,7 @@
                                 <td class="text-center">{{ $mahasiswas->firstItem() + $index }}</td>
                                 <td>{{ $mhs->nama }}</td>
                                 <td>{{ $mhs->nim }}</td>
-                                <td>{{ $mhs->programStudi->nama }}</td>
+                                <td>{{ $mhs->programStudi->nama_program_studi ?? '-' }}</td>
                                 <td>{{ $mhs->email }}</td>
                                 <td>{{ $mhs->no_hp }}</td>
                                 <td>

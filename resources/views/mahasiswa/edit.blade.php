@@ -31,7 +31,7 @@
                             <select class="form-select @error('program_studi_id') is-invalid @enderror" id="program_studi_id" name="program_studi_id" required>
                                 <option value="">Pilih Program Studi</option>
                                 @foreach($programStudis as $prodi)
-                                    <option value="{{ $prodi->id }}" {{ old('program_studi_id', $mahasiswa->program_studi_id) == $prodi->id ? 'selected' : '' }}>{{ $prodi->nama }}</option>
+                                    <option value="{{ $prodi->id }}" {{ old('program_studi_id', $mahasiswa->program_studi_id) == $prodi->id ? 'selected' : '' }}>{{ $prodi->nama_program_studi }}</option>
                                 @endforeach
                             </select>
                             @error('program_studi_id')
