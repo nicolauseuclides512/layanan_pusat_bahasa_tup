@@ -48,6 +48,7 @@
                                     <th>{{ __('Tanggal Kadaluarsa') }}</th>
                                     <th>{{ __('Lembaga Penyelenggara') }}</th>
                                     <th>{{ __('Status') }}</th>
+                                    <th>{{ __('Status NDE') }}</th>
                                     <th>{{ __('Alasan Penolakan') }}</th>
                                     <th>{{ __('Aksi') }}</th>
                                 </tr>
@@ -67,14 +68,26 @@
                                                 {{ ucfirst($sertifikat->status) }}
                                             </span>
                                         </td>
+                                        <td>
+                                            @if($sertifikat->status === 'approved')
+                                                <span class="badge bg-{{ $sertifikat->status_nde === 'terkirim' ? 'success' : 'warning' }}">
+                                                    {{ $sertifikat->status_nde === 'terkirim' ? 'Terkirim' : 'Belum Terkirim' }}
+                                                </span>
+                                                <button type="button" class="btn btn-sm btn-primary" data-bs-toggle="modal" data-bs-target="#updateNdeModal{{ $sertifikat->id }}">
+                                                    <i class="fas fa-edit"></i>
+                                                </button>
+                                            @else
+                                                -
+                                            @endif
+                                        </td>
                                         <td>{{ $sertifikat->alasan_penolakan ?? '-' }}</td>
                                         <td>
-                                            <a href="{{ route('verifikasi.preview', $sertifikat) }}" class="btn btn-info btn-sm">
-                                                <i class="fas fa-eye"></i> Preview
+                                            <a href="{{ route('verifikasi.preview', $sertifikat) }}" class="btn btn-info btn-sm" title="Preview Sertifikat">
+                                                <i class="fas fa-eye"></i>
                                             </a>
                                             @if($sertifikat->status === 'pending')
-                                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#verifikasiModal{{ $sertifikat->id }}">
-                                                    <i class="fas fa-check"></i> Verifikasi
+                                                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#verifikasiModal{{ $sertifikat->id }}" title="Verifikasi Sertifikat">
+                                                    <i class="fas fa-check-circle"></i>
                                                 </button>
                                             @endif
                                         </td>
@@ -125,6 +138,44 @@
                                                                     </div>
                                                                 @enderror
                                                                 <small class="text-muted">Alasan penolakan harus diisi jika status ditolak</small>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                            <button type="submit" class="btn btn-primary">Simpan</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endif
+
+                                    @if($sertifikat->status === 'approved')
+                                        <div class="modal fade" id="updateNdeModal{{ $sertifikat->id }}" tabindex="-1" aria-labelledby="updateNdeModalLabel{{ $sertifikat->id }}" aria-hidden="true">
+                                            <div class="modal-dialog">
+                                                <div class="modal-content">
+                                                    <form action="{{ route('sertifikat.update-nde', $sertifikat) }}" method="POST">
+                                                        @csrf
+                                                        @method('PUT')
+                                                        <div class="modal-header">
+                                                            <h5 class="modal-title" id="updateNdeModalLabel{{ $sertifikat->id }}">Update Status NDE</h5>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="mb-3">
+                                                                <label class="form-label">Status NDE</label>
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio" name="status_nde" id="belum_terkirim{{ $sertifikat->id }}" value="belum_terkirim" {{ $sertifikat->status_nde === 'belum_terkirim' ? 'checked' : '' }} required>
+                                                                    <label class="form-check-label" for="belum_terkirim{{ $sertifikat->id }}">
+                                                                        Belum Terkirim
+                                                                    </label>
+                                                                </div>
+                                                                <div class="form-check">
+                                                                    <input class="form-check-input" type="radio" name="status_nde" id="terkirim{{ $sertifikat->id }}" value="terkirim" {{ $sertifikat->status_nde === 'terkirim' ? 'checked' : '' }} required>
+                                                                    <label class="form-check-label" for="terkirim{{ $sertifikat->id }}">
+                                                                        Terkirim
+                                                                    </label>
+                                                                </div>
                                                             </div>
                                                         </div>
                                                         <div class="modal-footer">

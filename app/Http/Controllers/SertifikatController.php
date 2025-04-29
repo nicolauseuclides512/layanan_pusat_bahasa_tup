@@ -146,6 +146,6 @@ class SertifikatController extends Controller
             'status_nde' => $request->status_nde
         ]);
 
-        return redirect()->route('sertifikat.index')->with('success', 'Status NDE berhasil diperbarui.');
+        return redirect()->route('verifikasi.index')->with('success', 'Status NDE berhasil diperbarui.');
     }
 }

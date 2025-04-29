@@ -39,6 +39,7 @@ Route::middleware('auth')->group(function () {
 
     Route::resource('verifikasi', VerifikasiController::class)->parameters(['verifikasi' => 'sertifikat']);
     Route::get('verifikasi/{sertifikat}/preview', [VerifikasiController::class, 'preview'])->name('verifikasi.preview');
+    Route::put('/sertifikat/{sertifikat}/update-nde', [SertifikatController::class, 'updateNde'])->name('sertifikat.update-nde');
 });
 
 // =============================
@@ -77,6 +78,7 @@ Route::middleware('auth:mahasiswa')->group(function () {
 Route::middleware('auth')->group(function () {
     Route::get('/verifikasi', [VerifikasiController::class, 'index'])->name('verifikasi.index');
     Route::put('/verifikasi/{sertifikat}', [VerifikasiController::class, 'update'])->name('verifikasi.update');
+    Route::put('/sertifikat/{sertifikat}/update-nde', [SertifikatController::class, 'updateNde'])->name('sertifikat.update-nde');
 });
 
 // =============================

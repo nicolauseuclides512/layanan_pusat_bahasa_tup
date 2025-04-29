@@ -2,18 +2,18 @@
 <ul class="nav flex-column">
     <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('dashboard.admin') ? 'active' : '' }}" href="{{ route('dashboard.admin') }}">
-            <i class="bi bi-house"></i> Home
+            <i class="fas fa-home"></i> Home
         </a>
     </li>
     <li class="nav-item">
         <a class="nav-link {{ request()->routeIs('verifikasi.*') ? 'active' : '' }}" href="{{ route('verifikasi.index') }}">
-            <i class="bi bi-check2-square"></i> List Sertifikat
+            <i class="fas fa-list"></i> List Sertifikat
         </a>
     </li>
     <li class="nav-item">
         <form method="POST" action="{{ route('logout') }}">
             @csrf
-            <button class="nav-link text-danger" type="submit"><i class="bi bi-box-arrow-right"></i> Logout</button>
+            <button class="nav-link text-danger" type="submit"><i class="fas fa-sign-out-alt"></i> Logout</button>
         </form>
     </li>
 </ul> 

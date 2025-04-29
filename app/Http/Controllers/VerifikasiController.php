@@ -35,6 +35,12 @@ class VerifikasiController extends Controller
 
             $sertifikat->status = (string) $request->status;
             $sertifikat->alasan_penolakan = $request->status === 'approved' ? '-' : $request->alasan_penolakan;
+            
+            // Set status_nde to belum_terkirim when status is approved
+            if ($request->status === 'approved') {
+                $sertifikat->status_nde = 'belum_terkirim';
+            }
+            
             $sertifikat->save();
 
             return redirect()->route('verifikasi.index')->with('success', 'Status sertifikat berhasil diperbarui.');
