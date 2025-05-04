@@ -3,12 +3,15 @@
 namespace App\Exports;
 
 use App\Models\Sertifikat;
-use Maatwebsite\Excel\Concerns\FromCollection;
+use Maatwebsite\Excel\Concerns\FromQuery;
+use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Concerns\WithMapping;
 
-class SertifikatExport implements FromCollection, WithHeadings
+class SertifikatExport implements FromQuery, WithHeadings, WithMapping
 {
+    use Exportable;
+
     protected $startDate;
     protected $endDate;
 
@@ -18,26 +21,42 @@ class SertifikatExport implements FromCollection, WithHeadings
         $this->endDate = $endDate;
     }
 
-    // 🟢 Data yang diekspor
-    public function collection()
+    public function query()
     {
-        return Sertifikat::where('status', 'valid')
-            ->whereBetween('tanggal_ujian', [$this->startDate, $this->endDate])
-            ->get(['nama_sertifikat', 'lembaga_penyelenggara', 'tanggal_ujian', 'tanggal_berakhir', 'file_path'])
-            ->map(function ($sertifikat) {
-                return [
-                    'Nama Sertifikat' => $sertifikat->nama_sertifikat,
-                    'Lembaga' => $sertifikat->lembaga_penyelenggara,
-                    'Tanggal Ujian' => $sertifikat->tanggal_ujian,
-                    'Tanggal Berakhir' => $sertifikat->tanggal_berakhir,
-                    'Link Sertifikat' => url(Storage::url($sertifikat->file_path))
-                ];
-            });
+        return Sertifikat::query()
+            ->with(['mahasiswa', 'verifier'])
+            ->whereBetween('created_at', [$this->startDate, $this->endDate]);
     }
 
-    // 🟢 Header kolom dalam file Excel
     public function headings(): array
     {
-        return ['Nama Sertifikat', 'Lembaga', 'Tanggal Ujian', 'Tanggal Berakhir', 'Link Sertifikat'];
+        return [
+            'ID',
+            'Nama Mahasiswa',
+            'NIM',
+            'Nama Sertifikat',
+            'Lembaga Penyelenggara',
+            'Tanggal Ujian',
+            'Tanggal Berakhir',
+            'Status',
+            'Diverifikasi Oleh',
+            'Tanggal Verifikasi',
+        ];
+    }
+
+    public function map($sertifikat): array
+    {
+        return [
+            $sertifikat->id,
+            $sertifikat->mahasiswa->nama,
+            $sertifikat->mahasiswa->nim,
+            $sertifikat->nama_sertifikat,
+            $sertifikat->lembaga_penyelenggara,
+            $sertifikat->tanggal_ujian->format('Y-m-d'),
+            $sertifikat->tanggal_berakhir->format('Y-m-d'),
+            $sertifikat->status,
+            $sertifikat->verifier ? $sertifikat->verifier->name : '-',
+            $sertifikat->verified_at ? $sertifikat->verified_at->format('Y-m-d H:i:s') : '-',
+        ];
     }
 }
