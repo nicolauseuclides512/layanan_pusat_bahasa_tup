@@ -34,7 +34,7 @@ Route::middleware('guest')->group(function () {
 // ✅ DASHBOARD (ADMIN & MAHASISWA)
 // =============================
 // Rute untuk dashboard mahasiswa
-Route::middleware('auth:mahasiswa')->group(function () {
+Route::middleware('auth:mahasiswa')->prefix('mahasiswa')->group(function () {
     Route::get('/dashboard/mahasiswa', [DashboardController::class, 'mahasiswa'])->name('dashboard.mahasiswa');
     Route::get('/sertifikat', [SertifikatController::class, 'index'])->name('sertifikat.index');
     Route::get('/sertifikat/create', [SertifikatController::class, 'create'])->name('sertifikat.create');
@@ -43,13 +43,13 @@ Route::middleware('auth:mahasiswa')->group(function () {
     Route::delete('/sertifikat/{sertifikat}', [SertifikatController::class, 'destroy'])->name('sertifikat.destroy');
     Route::get('/sertifikat/{sertifikat}/edit', [SertifikatController::class, 'edit'])->name('sertifikat.edit');
     Route::put('/sertifikat/{sertifikat}', [SertifikatController::class, 'update'])->name('sertifikat.update');
-    Route::get('/eprt-khusus-mahasiswa', [MahasiswaEprtKhususController::class, 'index'])->name('eprt-khusus.mahasiswa.index');
+    Route::get('/eprt-khusus', [MahasiswaEprtKhususController::class, 'index'])->name('eprt-khusus.mahasiswa.index');
     Route::get('change-password', [AuthController::class, 'showChangePasswordForm'])->name('password.change');
     Route::post('change-password', [AuthController::class, 'changePassword'])->name('password.update');
 });
 
 // Rute untuk dashboard admin
-Route::middleware('auth:admin')->group(function () {
+Route::middleware('auth:admin')->prefix('admin')->group(function () {
     Route::get('/dashboard/admin', [DashboardController::class, 'admin'])->name('dashboard.admin');
     Route::get('/mahasiswa', [MahasiswaController::class, 'index'])->name('mahasiswa.index');
     Route::get('/verifikasi', [VerifikasiController::class, 'index'])->name('verifikasi.index');
