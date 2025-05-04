@@ -9,6 +9,7 @@ use App\Http\Controllers\VerifikasiController;
 use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\EprtKhususController;
+use App\Http\Controllers\MahasiswaEprtKhususController;
 
 // 🟢 Halaman Utama (Redirect ke Login)
 Route::get('/', function () {
@@ -42,6 +43,7 @@ Route::middleware('auth:mahasiswa')->group(function () {
     Route::delete('/sertifikat/{sertifikat}', [SertifikatController::class, 'destroy'])->name('sertifikat.destroy');
     Route::get('/sertifikat/{sertifikat}/edit', [SertifikatController::class, 'edit'])->name('sertifikat.edit');
     Route::put('/sertifikat/{sertifikat}', [SertifikatController::class, 'update'])->name('sertifikat.update');
+    Route::get('/eprt-khusus-mahasiswa', [MahasiswaEprtKhususController::class, 'index'])->name('eprt-khusus.mahasiswa.index');
     Route::get('change-password', [AuthController::class, 'showChangePasswordForm'])->name('password.change');
     Route::post('change-password', [AuthController::class, 'changePassword'])->name('password.update');
 });
@@ -68,37 +70,4 @@ Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 // =============================
 Route::get('/reset-password', [AuthController::class, 'showResetPasswordForm'])->name('reset.password.form');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('reset.password');
-
-// =============================
-// ✅ MANAJEMEN SERTIFIKAT (MAHASISWA)
-// =============================
-Route::middleware('auth:mahasiswa')->group(function () {
-    Route::get('/sertifikat', [SertifikatController::class, 'index'])->name('sertifikat.index');
-    Route::get('/sertifikat/create', [SertifikatController::class, 'create'])->name('sertifikat.create');
-    Route::post('/sertifikat', [SertifikatController::class, 'store'])->name('sertifikat.store');
-    Route::get('change-password', [AuthController::class, 'showChangePasswordForm'])->name('password.change');
-    Route::post('change-password', [AuthController::class, 'changePassword'])->name('password.update');
-    Route::get('/sertifikat/{sertifikat}/preview', [SertifikatController::class, 'preview'])->name('sertifikat.preview');
-    Route::delete('/sertifikat/{sertifikat}', [SertifikatController::class, 'destroy'])->name('sertifikat.destroy');
-    Route::get('/sertifikat/{sertifikat}/edit', [SertifikatController::class, 'edit'])->name('sertifikat.edit');
-    Route::put('/sertifikat/{sertifikat}', [SertifikatController::class, 'update'])->name('sertifikat.update');
-});
-
-// =============================
-// ✅ VERIFIKASI SERTIFIKAT (ADMIN)
-// =============================
-Route::middleware('auth:admin')->group(function () {
-    Route::get('/verifikasi', [VerifikasiController::class, 'index'])->name('verifikasi.index');
-    Route::put('/verifikasi/{sertifikat}', [VerifikasiController::class, 'update'])->name('verifikasi.update');
-    Route::put('/verifikasi/{id}/restore', [VerifikasiController::class, 'restore'])->name('verifikasi.restore');
-    Route::get('verifikasi/{sertifikat}/preview', [VerifikasiController::class, 'preview'])->name('verifikasi.preview');
-});
-
-// =============================
-// ✅ LAPORAN SERTIFIKAT (ADMIN)
-// =============================
-Route::middleware('auth:admin')->group(function () {
-    Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
-    Route::post('/laporan/export', [LaporanController::class, 'export'])->name('laporan.export');
-});
 

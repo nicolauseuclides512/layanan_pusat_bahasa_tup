@@ -7,8 +7,13 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('sertifikat.*') ? 'active' : '' }}" href="{{ route('sertifikat.index') }}">
+            <a class="nav-link {{ request()->routeIs('mahasiswa.sertifikat.*') ? 'active' : '' }}" href="{{ route('sertifikat.index') }}">
                 <i class="fas fa-list"></i> List Sertifikat
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('eprt-khusus.mahasiswa.index') ? 'active' : '' }}" href="{{ route('eprt-khusus.mahasiswa.index') }}">
+                <i class="fas fa-calendar-alt"></i> EPrT Khusus
             </a>
         </li>
         <li class="nav-item">

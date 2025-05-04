@@ -184,4 +184,10 @@ class EprtKhususController extends Controller
                 ->with('error', 'Terjadi kesalahan saat menghapus pendaftaran EPrT Khusus.');
         }
     }
+
+    public function mahasiswaIndex()
+    {
+        $registrations = EprtKhusus::where('status', 'aktif')->orderBy('tanggal_buka', 'asc')->get();
+        return view('mahasiswa.eprt_khusus.index', compact('registrations'));
+    }
 } 
