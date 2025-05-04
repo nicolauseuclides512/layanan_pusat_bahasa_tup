@@ -9,7 +9,7 @@
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Preview Sertifikat</h5>
-                    <a href="{{ route('verifikasi.index') }}" class="btn btn-light btn-sm">
+                    <a href="{{ url()->previous() }}" class="btn btn-secondary">
                         <i class="fas fa-arrow-left"></i> Kembali
                     </a>
                 </div>

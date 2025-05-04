@@ -67,14 +67,14 @@ class VerifikasiController extends Controller
     // 🟢 Proses verifikasi sertifikat
     public function update(Request $request, Sertifikat $sertifikat)
     {
-        $request->validate([
-            'status' => 'required|in:approved,rejected',
+            $request->validate([
+                'status' => 'required|in:approved,rejected',
             'alasan_penolakan' => 'required_if:status,rejected'
-        ]);
+            ]);
 
         $sertifikat->status = $request->status;
         $sertifikat->alasan_penolakan = $request->status === 'rejected' ? $request->alasan_penolakan : null;
-        $sertifikat->save();
+            $sertifikat->save();
 
         return redirect()->route('verifikasi.index')->with('success', 'Validasi sertifikat berhasil disimpan.');
     }

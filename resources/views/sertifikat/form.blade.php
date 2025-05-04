@@ -19,18 +19,18 @@
                         <div class="mb-3">
                             <label for="gambar_sertifikat" class="form-label">{{ __('Gambar Sertifikat') }} <span class="text-danger">*</span></label>
                             <input type="file" class="form-control @error('gambar_sertifikat') is-invalid @enderror" id="gambar_sertifikat" name="gambar_sertifikat" accept="image/*" required>
-                            @error('gambar_sertifikat')
+                                @error('gambar_sertifikat')
                                 <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                                @enderror
                             <small class="text-muted">Format: JPG, PNG, JPEG. Maksimal 2MB</small>
                         </div>
 
                         <div class="mb-3">
                             <label for="nilai" class="form-label">{{ __('Nilai') }} <span class="text-danger">*</span></label>
                             <input type="number" class="form-control @error('nilai') is-invalid @enderror" id="nilai" name="nilai" value="{{ old('nilai', $sertifikat->nilai ?? '') }}" min="0" max="700" required>
-                            @error('nilai')
+                                @error('nilai')
                                 <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+                                @enderror
                         </div>
 
                         <div class="row mb-3">

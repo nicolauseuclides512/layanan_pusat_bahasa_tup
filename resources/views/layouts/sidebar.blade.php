@@ -4,9 +4,9 @@
     </div>
     <ul class="nav flex-column">
         <li class="nav-item">
-            <a class="nav-link active" href="{{ route('dashboard.admin') }}">
-                <i class="bi bi-house-door"></i> Home
-            </a>
+                <a class="nav-link active" href="{{ route('dashboard.admin') }}">
+                    <i class="bi bi-house-door"></i> Home
+                </a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="{{ route('verifikasi.index') }}">

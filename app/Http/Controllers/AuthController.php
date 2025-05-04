@@ -129,14 +129,14 @@ class AuthController extends Controller
         ]);
 
         Mahasiswa::create([
-            'nama' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'nim' => $request->nim,
-            'program_studi_id' => $request->program_studi_id,
-            'no_hp' => $request->no_telepon,
-        ]);
+                'nama' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'jenis_kelamin' => $request->jenis_kelamin,
+                'nim' => $request->nim,
+                'program_studi_id' => $request->program_studi_id,
+                'no_hp' => $request->no_telepon,
+            ]);
 
         return redirect()->route('login')->with('success', 'Registration successful. Please login.');
     }

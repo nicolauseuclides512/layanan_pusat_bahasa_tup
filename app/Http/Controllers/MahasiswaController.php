@@ -83,11 +83,10 @@ class MahasiswaController extends Controller
         return view('mahasiswa.index', compact('mahasiswas', 'programStudis'));
     }
 
-    public function show(Mahasiswa $mahasiswa)
+    public function show($id)
     {
-        $mahasiswa->load(['programStudi', 'sertifikat' => function($query) {
-            $query->orderBy('created_at', 'desc');
-        }]);
+        $mahasiswa = \App\Models\Mahasiswa::with(['pendaftaranEprtKhusus.eprtKhusus'])
+            ->findOrFail($id);
         
         return view('mahasiswa.show', compact('mahasiswa'));
     }

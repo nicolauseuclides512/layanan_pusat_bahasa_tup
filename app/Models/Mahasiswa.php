@@ -39,4 +39,9 @@ class Mahasiswa extends Authenticatable
     {
         return $this->hasMany(Sertifikat::class);
     }
+
+    public function pendaftaranEprtKhusus()
+    {
+        return $this->hasMany(\App\Models\PendaftaranEprtKhusus::class, 'mahasiswa_id');
+    }
 }

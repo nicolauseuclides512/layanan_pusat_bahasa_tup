@@ -63,6 +63,8 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
     Route::resource('eprt_khusus', EprtKhususController::class)->parameters(['eprt_khusus' => 'eprtKhusus']);
     Route::resource('mahasiswa', MahasiswaController::class);
     Route::get('/eprt_khusus/{eprtKhusus}/pendaftar', [EprtKhususController::class, 'pendaftar'])->name('eprt_khusus.pendaftar');
+    Route::post('/pendaftaran-eprt-khusus/{id}/validate', [PendaftaranEprtKhususController::class, 'validateRegistration'])->name('pendaftaran-eprt-khusus.validate');
+    Route::get('/mahasiswa/{mahasiswa}', [MahasiswaController::class, 'show'])->name('mahasiswa.show');
 });
 
 // Rute untuk logout (bisa diakses oleh admin dan mahasiswa)

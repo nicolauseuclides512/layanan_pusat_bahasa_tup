@@ -61,30 +61,30 @@
                                         <td>{{ $eprt->tanggal_buka->format('d/m/Y H:i') }}</td>
                                         <td>{{ $eprt->tanggal_tutup->format('d/m/Y H:i') }}</td>
                                         <td>
-                                            <span class="badge bg-{{ $eprt->status === 'aktif' ? 'success' : 'danger' }}">
-                                                {{ ucfirst($eprt->status) }}
-                                            </span>
+                                <span class="badge bg-{{ $eprt->status === 'aktif' ? 'success' : 'danger' }}">
+                                    {{ ucfirst($eprt->status) }}
+                                </span>
                                         </td>
                                         <td>
                                             <a href="{{ route('eprt_khusus.edit', $eprt) }}" class="btn btn-warning btn-sm" title="Edit">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
+                                        <i class="fas fa-edit"></i>
+                                    </a>
                                             <a href="{{ route('eprt_khusus.pendaftar', ['eprtKhusus' => $eprt->id]) }}" class="btn btn-info btn-sm" title="Lihat Pendaftar">
                                                 <i class="fas fa-users"></i>
                                             </a>
                                             <form action="{{ route('eprt_khusus.destroy', $eprt) }}" method="POST" class="d-inline delete-form">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm" title="Hapus">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </form>
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm" title="Hapus">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </form>
                                         </td>
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
-                    </div>
+                        </div>
                 </div>
             </div>
         </div>

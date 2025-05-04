@@ -2,103 +2,123 @@
 
 @section('content')
 <div class="container-fluid">
-    <!-- Header -->
     <div class="row mb-4">
         <div class="col">
-            <div class="d-flex justify-content-between align-items-center">
-                <h4 class="mb-0">Detail Mahasiswa</h4>
-                <div class="d-flex gap-2">
-                    <a href="{{ route('mahasiswa.index') }}" class="btn btn-secondary">
-                        <i class="fas fa-arrow-left"></i> Kembali
-                    </a>
-                    <a href="{{ route('mahasiswa.edit', $mahasiswa->id) }}" class="btn btn-warning">
-                        <i class="fas fa-edit"></i> Edit
-                    </a>
-                </div>
-            </div>
+            <h4 class="mb-0">Detail Mahasiswa</h4>
+            <a href="{{ url()->previous() }}" class="btn btn-secondary mt-2">
+                <i class="fas fa-arrow-left"></i> Kembali
+            </a>
         </div>
     </div>
 
     <div class="row">
-        <!-- Kolom Kiri: Informasi Mahasiswa -->
-        <div class="col-md-4 mb-4">
-            <div class="card h-100">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Informasi Pribadi</h5>
+                </div>
                 <div class="card-body">
-                    <h5 class="card-title mb-4">Informasi Mahasiswa</h5>
-                    <table class="table table-borderless">
+                    <table class="table">
                         <tr>
-                            <td style="width: 35%"><strong>Nama</strong></td>
-                            <td>: {{ $mahasiswa->nama }}</td>
+                            <th width="30%">Nama</th>
+                            <td>{{ $mahasiswa->nama }}</td>
                         </tr>
                         <tr>
-                            <td><strong>NIM</strong></td>
-                            <td>: {{ $mahasiswa->nim }}</td>
+                            <th>NIM</th>
+                            <td>{{ $mahasiswa->nim }}</td>
                         </tr>
                         <tr>
-                            <td><strong>Program Studi</strong></td>
-                            <td>: {{ $mahasiswa->programStudi->nama_program_studi }}</td>
+                            <th>Email</th>
+                            <td>{{ $mahasiswa->email }}</td>
                         </tr>
                         <tr>
-                            <td><strong>Email</strong></td>
-                            <td>: {{ $mahasiswa->email }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>No. HP</strong></td>
-                            <td>: {{ $mahasiswa->no_hp }}</td>
-                        </tr>
-                        <tr>
-                            <td><strong>Terdaftar</strong></td>
-                            <td>: {{ $mahasiswa->created_at->format('d M Y') }}</td>
+                            <th>Program Studi</th>
+                            <td>{{ $mahasiswa->program_studi ?? '-' }}</td>
                         </tr>
                     </table>
                 </div>
             </div>
         </div>
 
-        <!-- Kolom Kanan: Riwayat Sertifikat -->
-        <div class="col-md-8">
-            <div class="card">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Riwayat Pendaftaran EPrT Khusus</h5>
+                </div>
                 <div class="card-body">
-                    <h5 class="card-title mb-4">Riwayat Sertifikat</h5>
-                    
-                    @if($mahasiswa->sertifikat->count() > 0)
-                        <div class="list-group">
-                            @foreach($mahasiswa->sertifikat as $sertifikat)
-                                <div class="list-group-item list-group-item-action">
-                                    <div class="d-flex w-100 justify-content-between align-items-center">
-                                        <div>
-                                            <h6 class="mb-1">{{ $sertifikat->jenis_sertifikat }}</h6>
-                                            <p class="mb-1 text-muted">
-                                                <small>
-                                                    <i class="fas fa-calendar-alt"></i> 
-                                                    {{ $sertifikat->created_at->format('d M Y') }}
-                                                </small>
-                                            </p>
-                                        </div>
-                                        <div class="d-flex align-items-center gap-3">
-                                            <span class="badge rounded-pill bg-{{ $sertifikat->status == 'approved' ? 'success' : ($sertifikat->status == 'rejected' ? 'danger' : 'warning') }}">
-                                                {{ ucfirst($sertifikat->status) }}
-                                            </span>
-                                            @if($sertifikat->status_nde)
-                                                <span class="badge rounded-pill bg-info">
-                                                    {{ $sertifikat->status_nde }}
-                                                </span>
-                                            @endif
-                                            <a href="{{ route('verifikasi.show', $sertifikat->id) }}" 
-                                               class="btn btn-sm btn-outline-primary">
-                                                <i class="fas fa-eye"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
+                    @if($mahasiswa->pendaftaranEprtKhusus->isEmpty())
+                        <div class="alert alert-info">Belum ada riwayat pendaftaran EPrT Khusus.</div>
                     @else
-                        <div class="text-center py-4">
-                            <img src="{{ asset('images/no-data.png') }}" 
-                                 alt="No Certificates" 
-                                 style="max-width: 200px; opacity: 0.5;">
-                            <p class="mt-3 text-muted">Belum ada sertifikat yang diajukan</p>
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Pendaftaran</th>
+                                        <th>Status</th>
+                                        <th>Tanggal Daftar</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($mahasiswa->pendaftaranEprtKhusus as $i => $pendaftaran)
+                                        <tr>
+                                            <td>{{ $i+1 }}</td>
+                                            <td>{{ $pendaftaran->eprtKhusus->nama_pendaftaran }}</td>
+                                            <td>
+                                                <span class="badge bg-{{ $pendaftaran->status == 'pending' ? 'warning' : ($pendaftaran->status == 'approved' ? 'success' : 'danger') }}">
+                                                    {{ ucfirst($pendaftaran->status) }}
+                                                </span>
+                                            </td>
+                                            <td>{{ $pendaftaran->created_at->format('d M Y H:i') }}</td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    @endif
+                </div>
+            </div>
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Riwayat Upload Sertifikat</h5>
+                </div>
+                <div class="card-body">
+                    @if($mahasiswa->sertifikat->isEmpty())
+                        <div class="alert alert-info">Belum ada sertifikat yang diupload.</div>
+                    @else
+                        <div class="table-responsive">
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Nama Dokumen</th>
+                                        <th>Lembaga Penyelenggara</th>
+                                        <th>Status</th>
+                                        <th>Tanggal Upload</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach($mahasiswa->sertifikat as $i => $sertifikat)
+                                        <tr>
+                                            <td>{{ $i+1 }}</td>
+                                            <td>{{ $sertifikat->nama_dokumen }}</td>
+                                            <td>{{ $sertifikat->lembaga_penyelenggara }}</td>
+                                            <td>
+                                                <span class="badge bg-{{ $sertifikat->status == 'pending' ? 'warning' : ($sertifikat->status == 'approved' ? 'success' : 'danger') }}">
+                                                    {{ ucfirst($sertifikat->status) }}
+                                                </span>
+                                            </td>
+                                            <td>{{ $sertifikat->created_at->format('d M Y H:i') }}</td>
+                                            <td>
+                                                <a href="{{ route('verifikasi.preview', $sertifikat->id) }}" class="btn btn-primary btn-sm" target="_blank" title="Preview">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
                         </div>
                     @endif
                 </div>
