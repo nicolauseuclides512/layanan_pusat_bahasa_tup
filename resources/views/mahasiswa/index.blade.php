@@ -13,6 +13,30 @@
         </div>
     </div>
 
+    <!-- Filter & Search -->
+    <div class="row mb-3">
+        <div class="col-md-8">
+            <form method="GET" action="" class="row g-2 align-items-end">
+                <div class="col-md-5">
+                    <label for="prodi" class="form-label mb-1">Program Studi</label>
+                    <select name="prodi" id="prodi" class="form-select">
+                        <option value="">-- Semua Program Studi --</option>
+                        @foreach($programStudis as $prodi)
+                            <option value="{{ $prodi->id }}" {{ request('prodi') == $prodi->id ? 'selected' : '' }}>{{ $prodi->nama_program_studi }}</option>
+                        @endforeach
+                    </select>
+                </div>
+                <div class="col-md-5">
+                    <label for="search" class="form-label mb-1">Cari Nama/NIM</label>
+                    <input type="text" name="search" id="search" class="form-control" placeholder="Cari nama atau NIM..." value="{{ request('search') }}">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-info w-100"><i class="fas fa-search"></i> Filter</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     @if(session('success'))
         <div class="alert alert-success alert-dismissible fade show" role="alert" id="success-alert">
             {{ session('success') }}
