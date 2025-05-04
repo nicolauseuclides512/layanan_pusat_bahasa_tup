@@ -28,7 +28,7 @@ class SertifikatController extends Controller
     // 🟢 Menampilkan form tambah sertifikat
     public function create()
     {
-        return view('sertifikat.create');
+        return view('sertifikat.form');
     }
 
     // 🟢 Menyimpan sertifikat baru
@@ -42,12 +42,13 @@ class SertifikatController extends Controller
             'lembaga_penyelenggara' => 'required|string|max:255',
         ]);
 
-        $path = $request->file('gambar_sertifikat')->store('sertifikats', 'public');
+        $file = $request->file('gambar_sertifikat');
+        $path = $file->store('sertifikats', 'public');
         $mahasiswaId = auth('mahasiswa')->user()->id;
 
         Sertifikat::create([
             'mahasiswa_id' => $mahasiswaId,
-            'nama_dokumen' => $request->file('gambar_sertifikat')->getClientOriginalName(),
+            'nama_dokumen' => $file->getClientOriginalName(),
             'file_path' => $path,
             'nilai' => $request->nilai,
             'tanggal_ujian' => $request->tanggal_ujian,

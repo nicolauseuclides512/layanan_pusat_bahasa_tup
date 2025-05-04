@@ -16,31 +16,21 @@
                             @method('PUT')
                         @endif
 
-                        <div class="row mb-3">
-                            <label for="gambar_sertifikat" class="col-md-4 col-form-label text-md-end">{{ __('Gambar Sertifikat') }}</label>
-                            <div class="col-md-6">
-                                <input id="gambar_sertifikat" type="file" class="form-control @error('gambar_sertifikat') is-invalid @enderror" name="gambar_sertifikat" {{ !isset($sertifikat) ? 'required' : '' }}>
-                                @error('gambar_sertifikat')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                                @if(isset($sertifikat))
-                                    <small class="form-text text-muted">Biarkan kosong jika tidak ingin mengubah gambar.</small>
-                                @endif
-                            </div>
+                        <div class="mb-3">
+                            <label for="gambar_sertifikat" class="form-label">{{ __('Gambar Sertifikat') }} <span class="text-danger">*</span></label>
+                            <input type="file" class="form-control @error('gambar_sertifikat') is-invalid @enderror" id="gambar_sertifikat" name="gambar_sertifikat" accept="image/*" required>
+                            @error('gambar_sertifikat')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                            <small class="text-muted">Format: JPG, PNG, JPEG. Maksimal 2MB</small>
                         </div>
 
-                        <div class="row mb-3">
-                            <label for="nilai" class="col-md-4 col-form-label text-md-end">{{ __('Nilai Sertifikat') }}</label>
-                            <div class="col-md-6">
-                                <input id="nilai" type="number" class="form-control @error('nilai') is-invalid @enderror" name="nilai" value="{{ old('nilai', $sertifikat->nilai ?? '') }}" required min="0" max="700">
-                                @error('nilai')
-                                    <span class="invalid-feedback" role="alert">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
-                            </div>
+                        <div class="mb-3">
+                            <label for="nilai" class="form-label">{{ __('Nilai') }} <span class="text-danger">*</span></label>
+                            <input type="number" class="form-control @error('nilai') is-invalid @enderror" id="nilai" name="nilai" value="{{ old('nilai', $sertifikat->nilai ?? '') }}" min="0" max="700" required>
+                            @error('nilai')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="row mb-3">
