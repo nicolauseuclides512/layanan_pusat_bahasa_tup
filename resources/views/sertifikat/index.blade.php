@@ -49,7 +49,7 @@
                                     <a href="{{ route('sertifikat.preview', $sertifikat) }}" class="btn btn-info btn-sm" title="Preview Sertifikat">
                                         <i class="fas fa-eye"></i>
                                     </a>
-                                    @if($sertifikat->status === 'pending')
+                                    @if($sertifikat->status === 'pending' || $sertifikat->status === 'rejected')
                                         <a href="{{ route('sertifikat.edit', $sertifikat) }}" class="btn btn-warning btn-sm" title="Edit Sertifikat">
                                             <i class="fas fa-edit"></i>
                                         </a>
