@@ -11,7 +11,7 @@
     <div class="card">
         <div class="card-body">
             @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <div class="alert alert-success alert-dismissible fade show" role="alert" id="success-alert">
                     {{ session('success') }}
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
@@ -83,14 +83,20 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    setTimeout(function() {
+        const alert = document.getElementById('success-alert');
+        if(alert) {
+            alert.classList.remove('show');
+            alert.classList.add('fade');
+            setTimeout(() => alert.remove(), 500);
+        }
+    }, 2500);
     // Konfirmasi validasi dengan SweetAlert
     const validationForms = document.querySelectorAll('form[action*="validate"]');
     validationForms.forEach(form => {
         form.addEventListener('submit', function(e) {
             e.preventDefault();
-            
             const action = this.querySelector('input[name="status"]').value === 'approved' ? 'menerima' : 'menolak';
-            
             Swal.fire({
                 title: 'Apakah Anda yakin?',
                 text: `Anda akan ${action} pendaftaran mahasiswa ini.`,
