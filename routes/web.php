@@ -92,7 +92,6 @@ Route::middleware('auth:admin')->group(function () {
     Route::put('/verifikasi/{sertifikat}', [VerifikasiController::class, 'update'])->name('verifikasi.update');
     Route::put('/verifikasi/{id}/restore', [VerifikasiController::class, 'restore'])->name('verifikasi.restore');
     Route::get('verifikasi/{sertifikat}/preview', [VerifikasiController::class, 'preview'])->name('verifikasi.preview');
-    Route::put('/sertifikat/{sertifikat}/update-nde', [SertifikatController::class, 'updateNde'])->name('sertifikat.update-nde');
 });
 
 // =============================
@@ -103,6 +102,3 @@ Route::middleware('auth:admin')->group(function () {
     Route::post('/laporan/export', [LaporanController::class, 'export'])->name('laporan.export');
 });
 
-Route::middleware(['auth:web'])->group(function () {
-    Route::put('/sertifikat/{sertifikat}/update-nde', [SertifikatController::class, 'updateNde'])->name('sertifikat.update-nde');
-});

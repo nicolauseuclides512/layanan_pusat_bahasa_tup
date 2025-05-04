@@ -142,14 +142,30 @@ class SertifikatController extends Controller
 
     public function updateNde(Request $request, Sertifikat $sertifikat)
     {
+        // Validasi input
         $request->validate([
             'status_nde' => 'required|in:belum_terkirim,terkirim'
         ]);
 
-        $sertifikat->update([
-            'status_nde' => $request->status_nde
-        ]);
+        // Pastikan hanya admin yang bisa mengupdate
+        if (!auth('admin')->check()) {
+            return redirect()->back()->with('error', 'Unauthorized action.');
+        }
 
-        return redirect()->route('verifikasi.index')->with('success', 'Status NDE berhasil diperbarui.');
+        // Pastikan sertifikat sudah approved
+        if ($sertifikat->status !== 'approved') {
+            return redirect()->back()->with('error', 'Hanya sertifikat yang sudah disetujui yang bisa diupdate status NDE-nya.');
+        }
+
+        try {
+            // Update status NDE
+            $sertifikat->update([
+                'status_nde' => $request->status_nde
+            ]);
+
+            return redirect()->back()->with('success', 'Status NDE berhasil diperbarui.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Terjadi kesalahan saat memperbarui status NDE.');
+        }
     }
 }

@@ -110,18 +110,48 @@
                                         <a href="{{ route('verifikasi.preview', $sertifikat) }}" class="btn btn-info btn-sm" title="Preview">
                                             <i class="fas fa-eye"></i>
                                         </a>
-                                        <a href="{{ route('sertifikat.edit', $sertifikat) }}" class="btn btn-warning btn-sm" title="Edit">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                        <form action="{{ route('sertifikat.destroy', $sertifikat) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus sertifikat ini?')">
-                                            @csrf
-                                            @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm" title="Hapus">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </form>
+                                        @if($sertifikat->status !== 'approved')
+                                            <form action="{{ route('sertifikat.destroy', $sertifikat) }}" method="POST" class="d-inline" onsubmit="return confirm('Yakin ingin menghapus sertifikat ini?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm" title="Hapus">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        @endif
                                     </td>
                                 </tr>
+
+                                <!-- Modal Update NDE Status -->
+                                @if($sertifikat->status === 'approved')
+                                <div class="modal fade" id="updateNdeModal{{ $sertifikat->id }}" tabindex="-1" aria-labelledby="updateNdeModalLabel{{ $sertifikat->id }}" aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="updateNdeModalLabel{{ $sertifikat->id }}">Update Status NDE</h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            </div>
+                                            <form action="{{ route('sertifikat.update-nde', $sertifikat) }}" method="POST">
+                                                @csrf
+                                                @method('PUT')
+                                                <div class="modal-body">
+                                                    <div class="mb-3">
+                                                        <label for="status_nde" class="form-label">Status NDE</label>
+                                                        <select name="status_nde" id="status_nde" class="form-select" required>
+                                                            <option value="belum_terkirim" {{ $sertifikat->status_nde === 'belum_terkirim' ? 'selected' : '' }}>Belum Terkirim</option>
+                                                            <option value="terkirim" {{ $sertifikat->status_nde === 'terkirim' ? 'selected' : '' }}>Terkirim</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                                    <button type="submit" class="btn btn-primary">Simpan</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                @endif
                                 @empty
                                 <tr>
                                     <td colspan="10" class="text-center">Tidak ada sertifikat yang ditemukan.</td>
