@@ -10,6 +10,7 @@ use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\EprtKhususController;
 use App\Http\Controllers\MahasiswaEprtKhususController;
+use App\Http\Controllers\PendaftaranEprtKhususController;
 
 // 🟢 Halaman Utama (Redirect ke Login)
 Route::get('/', function () {
@@ -43,9 +44,10 @@ Route::middleware('auth:mahasiswa')->prefix('mahasiswa')->group(function () {
     Route::delete('/sertifikat/{sertifikat}', [SertifikatController::class, 'destroy'])->name('sertifikat.destroy');
     Route::get('/sertifikat/{sertifikat}/edit', [SertifikatController::class, 'edit'])->name('sertifikat.edit');
     Route::put('/sertifikat/{sertifikat}', [SertifikatController::class, 'update'])->name('sertifikat.update');
-    Route::get('/eprt-khusus', [MahasiswaEprtKhususController::class, 'index'])->name('eprt-khusus.mahasiswa.index');
+    Route::get('/eprt_khusus', [MahasiswaEprtKhususController::class, 'index'])->name('eprt_khusus.mahasiswa.index');
     Route::get('change-password', [AuthController::class, 'showChangePasswordForm'])->name('password.change');
     Route::post('change-password', [AuthController::class, 'changePassword'])->name('password.update');
+    Route::post('/pendaftaran_eprt_khusus', [PendaftaranEprtKhususController::class, 'store'])->name('pendaftaran_eprt_khusus.store');
 });
 
 // Rute untuk dashboard admin
@@ -58,8 +60,9 @@ Route::middleware('auth:admin')->prefix('admin')->group(function () {
     Route::get('verifikasi/{sertifikat}/preview', [VerifikasiController::class, 'preview'])->name('verifikasi.preview');
     Route::put('/sertifikat/{sertifikat}/update-nde', [SertifikatController::class, 'updateNde'])->name('sertifikat.update-nde');
     Route::get('/export/sertifikat', [ExportController::class, 'exportSertifikat'])->name('export.sertifikat');
-    Route::resource('eprt-khusus', EprtKhususController::class)->parameters(['eprt-khusus' => 'eprtKhusus']);
+    Route::resource('eprt_khusus', EprtKhususController::class)->parameters(['eprt_khusus' => 'eprtKhusus']);
     Route::resource('mahasiswa', MahasiswaController::class);
+    Route::get('/eprt_khusus/{eprtKhusus}/pendaftar', [EprtKhususController::class, 'pendaftar'])->name('eprt_khusus.pendaftar');
 });
 
 // Rute untuk logout (bisa diakses oleh admin dan mahasiswa)

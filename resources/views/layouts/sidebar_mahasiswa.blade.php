@@ -12,8 +12,9 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link {{ request()->routeIs('eprt-khusus.mahasiswa.index') ? 'active' : '' }}" href="{{ route('eprt-khusus.mahasiswa.index') }}">
-                <i class="fas fa-calendar-alt"></i> EPrT Khusus
+            <a class="nav-link {{ request()->routeIs('eprt_khusus.mahasiswa.index') ? 'active' : '' }}" href="{{ route('eprt_khusus.mahasiswa.index') }}">
+                <i class="fas fa-calendar-alt"></i>
+                <span>EPrT Khusus</span>
             </a>
         </li>
         <li class="nav-item">

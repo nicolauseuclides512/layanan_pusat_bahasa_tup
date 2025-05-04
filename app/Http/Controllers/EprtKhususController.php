@@ -23,15 +23,15 @@ class EprtKhususController extends Controller
 
         // Handle pagination
         $perPage = $request->get('per_page', 20);
-        $registrations = $perPage == 'all' 
+        $eprtKhusus = $perPage == 'all' 
             ? $query->get() 
             : $query->paginate($perPage)->withQueryString();
 
         if ($perPage == 'all') {
             $page = $request->get('page', 1);
-            $total = $registrations->count();
-            $registrations = new \Illuminate\Pagination\LengthAwarePaginator(
-                $registrations->forPage($page, $total),
+            $total = $eprtKhusus->count();
+            $eprtKhusus = new \Illuminate\Pagination\LengthAwarePaginator(
+                $eprtKhusus->forPage($page, $total),
                 $total,
                 $total,
                 $page,
@@ -39,7 +39,7 @@ class EprtKhususController extends Controller
             );
         }
         
-        return view('eprt-khusus.index', compact('registrations'));
+        return view('eprt_khusus.index', compact('eprtKhusus'));
     }
 
     public function create()
@@ -77,7 +77,7 @@ class EprtKhususController extends Controller
             'status' => $status
         ]);
 
-        return redirect()->route('eprt-khusus.index')
+        return redirect()->route('eprt_khusus.index')
             ->with('success', 'Pendaftaran EPrT Khusus berhasil ditambahkan.');
     }
 
@@ -158,7 +158,7 @@ class EprtKhususController extends Controller
                 'status' => $status
             ]);
 
-            return redirect()->route('eprt-khusus.index')
+            return redirect()->route('eprt_khusus.index')
                 ->with('success', 'Pendaftaran EPrT Khusus berhasil diperbarui.');
         } catch (\Exception $e) {
             return back()->withErrors(['error' => 'Terjadi kesalahan saat menyimpan data.'])->withInput();
@@ -175,12 +175,12 @@ class EprtKhususController extends Controller
             
             DB::commit();
             
-            return redirect()->route('eprt-khusus.index')
+            return redirect()->route('eprt_khusus.index')
                 ->with('success', 'Pendaftaran EPrT Khusus berhasil dihapus.');
         } catch (\Exception $e) {
             DB::rollback();
             
-            return redirect()->route('eprt-khusus.index')
+            return redirect()->route('eprt_khusus.index')
                 ->with('error', 'Terjadi kesalahan saat menghapus pendaftaran EPrT Khusus.');
         }
     }
@@ -189,5 +189,13 @@ class EprtKhususController extends Controller
     {
         $registrations = EprtKhusus::where('status', 'aktif')->orderBy('tanggal_buka', 'asc')->get();
         return view('mahasiswa.eprt_khusus.index', compact('registrations'));
+    }
+
+    public function pendaftar(EprtKhusus $eprtKhusus)
+    {
+        $pendaftar = \App\Models\PendaftaranEprtKhusus::with('mahasiswa')
+            ->where('eprt_khusus_id', $eprtKhusus->id)
+            ->get();
+        return view('eprt_khusus.pendaftar', compact('eprtKhusus', 'pendaftar'));
     }
 } 

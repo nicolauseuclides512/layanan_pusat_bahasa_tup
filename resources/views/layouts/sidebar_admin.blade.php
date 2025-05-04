@@ -16,8 +16,9 @@
         </a>
     </li>
     <li class="nav-item">
-        <a class="nav-link {{ request()->routeIs('eprt-khusus.*') ? 'active' : '' }}" href="{{ route('eprt-khusus.index') }}">
-            <i class="fas fa-calendar-alt"></i> List EPrT Khusus
+        <a class="nav-link {{ request()->routeIs('eprt_khusus.*') ? 'active' : '' }}" href="{{ route('eprt_khusus.index') }}">
+            <i class="fas fa-calendar-alt"></i>
+            <span>EPrT Khusus</span>
         </a>
     </li>
     <li class="nav-item">

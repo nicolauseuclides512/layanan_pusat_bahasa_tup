@@ -10,7 +10,7 @@
                 </div>
 
                 <div class="card-body">
-                    <form action="{{ route('eprt-khusus.store') }}" method="POST" class="form-container">
+                    <form action="{{ route('eprt_khusus.store') }}" method="POST" class="form-container">
                         @csrf
 
                         <div class="row mb-3">
@@ -112,7 +112,7 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-save"></i> {{ __('Simpan') }}
                                 </button>
-                                <a href="{{ route('eprt-khusus.index') }}" class="btn btn-secondary">
+                                <a href="{{ route('eprt_khusus.index') }}" class="btn btn-secondary">
                                     <i class="fas fa-arrow-left"></i> {{ __('Kembali') }}
                                 </a>
                             </div>

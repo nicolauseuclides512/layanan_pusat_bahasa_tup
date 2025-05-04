@@ -7,7 +7,7 @@
             <div class="card">
                 <div class="card-header d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">{{ __('List EPrT Khusus') }}</h5>
-                    <a href="{{ route('eprt-khusus.create') }}" class="btn btn-primary">
+                    <a href="{{ route('eprt_khusus.create') }}" class="btn btn-primary">
                         <i class="fas fa-plus"></i> Tambah EPrT Khusus
                     </a>
                 </div>
@@ -37,38 +37,54 @@
                     </div>
 
                     <!-- Content -->
-                    @forelse($eprtKhusus as $eprt)
-                        <div class="row py-2 border-bottom align-items-center">
-                            <div class="col-3">{{ $eprt->nama_pendaftaran }}</div>
-                            <div class="col-3">{{ $eprt->tanggal_buka->format('d/m/Y H:i') }}</div>
-                            <div class="col-3">{{ $eprt->tanggal_tutup->format('d/m/Y H:i') }}</div>
-                            <div class="col-2">
-                                <span class="badge bg-{{ $eprt->status === 'aktif' ? 'success' : 'danger' }}">
-                                    {{ ucfirst($eprt->status) }}
-                                </span>
-                            </div>
-                            <div class="col-1">
-                                <div class="d-flex gap-2">
-                                    <a href="{{ route('eprt-khusus.edit', $eprt) }}" class="btn btn-warning btn-sm" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <form action="{{ route('eprt-khusus.destroy', $eprt) }}" method="POST" class="d-inline delete-form">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm" title="Hapus">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    @empty
-                        <div class="row">
-                            <div class="col-12 text-center py-4">
-                                {{ __('Tidak ada pendaftaran EPrT Khusus yang ditemukan.') }}
-                            </div>
-                        </div>
-                    @endforelse
+                    <div class="table-responsive">
+                        <table class="table table-bordered table-striped">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Nama Pendaftaran</th>
+                                    <th>Tanggal Buka</th>
+                                    <th>Tanggal Tutup</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($eprtKhusus as $i => $eprt)
+                                    <tr>
+                                        <td>{{ $i+1 }}</td>
+                                        <td>
+                                            <a href="{{ route('eprt_khusus.pendaftar', ['eprtKhusus' => $eprt->id]) }}" class="text-decoration-underline text-primary" title="Lihat Pendaftar">
+                                                {{ $eprt->nama_pendaftaran }}
+                                            </a>
+                                        </td>
+                                        <td>{{ $eprt->tanggal_buka->format('d/m/Y H:i') }}</td>
+                                        <td>{{ $eprt->tanggal_tutup->format('d/m/Y H:i') }}</td>
+                                        <td>
+                                            <span class="badge bg-{{ $eprt->status === 'aktif' ? 'success' : 'danger' }}">
+                                                {{ ucfirst($eprt->status) }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            <a href="{{ route('eprt_khusus.edit', $eprt) }}" class="btn btn-warning btn-sm" title="Edit">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                            <a href="{{ route('eprt_khusus.pendaftar', ['eprtKhusus' => $eprt->id]) }}" class="btn btn-info btn-sm" title="Lihat Pendaftar">
+                                                <i class="fas fa-users"></i>
+                                            </a>
+                                            <form action="{{ route('eprt_khusus.destroy', $eprt) }}" method="POST" class="d-inline delete-form">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm" title="Hapus">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

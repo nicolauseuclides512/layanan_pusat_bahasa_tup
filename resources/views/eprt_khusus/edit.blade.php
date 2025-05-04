@@ -10,7 +10,7 @@
                 </div>
 
                 <div class="card-body">
-                    <form action="{{ route('eprt-khusus.update', $eprtKhusus) }}" method="POST" class="form-container">
+                    <form action="{{ route('eprt_khusus.update', $eprtKhusus) }}" method="POST" class="form-container">
                         @csrf
                         @method('PUT')
 
@@ -113,7 +113,7 @@
                                 <button type="submit" class="btn btn-primary">
                                     <i class="fas fa-save"></i> {{ __('Simpan Perubahan') }}
                                 </button>
-                                <a href="{{ route('eprt-khusus.index') }}" class="btn btn-secondary">
+                                <a href="{{ route('eprt_khusus.index') }}" class="btn btn-secondary">
                                     <i class="fas fa-arrow-left"></i> {{ __('Kembali') }}
                                 </a>
                             </div>
