@@ -39,17 +39,17 @@ class AuthController extends Controller
                 ->withErrors(['email' => "Terlalu banyak percobaan login. Silakan coba lagi dalam {$seconds} detik."]);
         }
 
-        // Try student authentication
+        // Try mahasiswa authentication first
         if (Auth::guard('mahasiswa')->attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
             RateLimiter::clear($key);
-            Log::info('Student login successful', ['email' => $request->email]);
+            Log::info('Mahasiswa login successful', ['email' => $request->email]);
             return redirect()->route('dashboard.mahasiswa')
                 ->with('success', 'Login berhasil!');
         }
 
         // Try admin authentication
-        if (Auth::guard('web')->attempt($credentials, $request->remember)) {
+        if (Auth::guard('admin')->attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
             RateLimiter::clear($key);
             Log::info('Admin login successful', ['email' => $request->email]);
@@ -61,7 +61,7 @@ class AuthController extends Controller
 
         return back()
             ->withInput($request->only('email'))
-            ->withErrors(['email' => trans('auth.failed')]);
+            ->withErrors(['email' => 'Email atau password salah.']);
     }
 
     // 🔴 Logout
@@ -236,23 +236,23 @@ class AuthController extends Controller
         ]);
 
         $key = 'login.admin.' . $request->ip();
-        if (\Illuminate\Support\Facades\RateLimiter::tooManyAttempts($key, 5)) {
-            $seconds = \Illuminate\Support\Facades\RateLimiter::availableIn($key);
+        if (RateLimiter::tooManyAttempts($key, 5)) {
+            $seconds = RateLimiter::availableIn($key);
             return back()
                 ->withInput($request->only('email'))
                 ->withErrors(['email' => "Terlalu banyak percobaan login. Silakan coba lagi dalam {$seconds} detik."]);
         }
 
-        if (Auth::guard('web')->attempt($credentials, $request->remember)) {
+        if (Auth::guard('admin')->attempt($credentials, $request->remember)) {
             $request->session()->regenerate();
-            \Illuminate\Support\Facades\RateLimiter::clear($key);
-            \Illuminate\Support\Facades\Log::info('Admin login successful', ['email' => $request->email]);
+            RateLimiter::clear($key);
+            Log::info('Admin login successful', ['email' => $request->email]);
             return redirect()->route('dashboard.admin')->with('success', 'Login berhasil!');
         }
 
-        \Illuminate\Support\Facades\RateLimiter::hit($key);
+        RateLimiter::hit($key);
         return back()
             ->withInput($request->only('email'))
-            ->withErrors(['email' => trans('auth.failed')]);
+            ->withErrors(['email' => 'Email atau password salah.']);
     }
 }

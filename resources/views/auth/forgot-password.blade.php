@@ -4,14 +4,15 @@
 <div class="d-flex justify-content-center align-items-center" style="min-height: 100vh; background: #fff;">
     <div class="card shadow" style="width: 450px; border-radius: 20px;">
         <div class="card-header text-center" style="background: #900; border-top-left-radius: 20px; border-top-right-radius: 20px;">
-            <img src="{{ asset('img/logo-telkom.png') }}" alt="Logo" style="height: 60px; margin-bottom: 10px;">
             <div class="text-white mt-2" style="font-size: 14px; font-weight: 600; line-height: 1.2;">
                 PUSAT BAHASA<br>
-                Institut Teknologi<br>
-                Telkom Purwokerto
+                Telkom University Purwokerto
             </div>
         </div>
         <div class="card-body">
+            <div class="text-center mb-4">
+                <img src="{{ asset('img/Logo Pusat Bahasa TUP.png') }}" alt="Logo" class="logo-navbar" style="height:80px;">
+            </div>
             <form method="POST" action="{{ route('password.email') }}">
                 @csrf
                 <div class="mb-3">

@@ -13,15 +13,15 @@
                     <table class="table table-borderless w-auto">
                         <tr>
                             <th>Nama Lengkap</th>
-                            <td>: {{ auth('web')->user()->nama }}</td>
+                            <td>: {{ auth('admin')->user()->nama }}</td>
                         </tr>
                         <tr>
                             <th>NIP</th>
-                            <td>: {{ auth('web')->user()->nip }}</td>
+                            <td>: {{ auth('admin')->user()->nip }}</td>
                         </tr>
                         <tr>
                             <th>Email</th>
-                            <td>: {{ auth('web')->user()->email }}</td>
+                            <td>: {{ auth('admin')->user()->email }}</td>
                         </tr>
                         <tr>
                             <th>Role</th>

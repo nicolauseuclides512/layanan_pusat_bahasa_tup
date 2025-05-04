@@ -29,43 +29,45 @@ Route::middleware('guest')->group(function () {
     Route::post('forgot-password', [AuthController::class, 'forgotPassword'])->name('password.email');
 });
 
-Route::middleware('auth')->group(function () {
-    Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+// =============================
+// ✅ DASHBOARD (ADMIN & MAHASISWA)
+// =============================
+// Rute untuk dashboard mahasiswa
+Route::middleware('auth:mahasiswa')->group(function () {
+    Route::get('/dashboard/mahasiswa', [DashboardController::class, 'mahasiswa'])->name('dashboard.mahasiswa');
+    Route::get('/sertifikat', [SertifikatController::class, 'index'])->name('sertifikat.index');
+    Route::get('/sertifikat/create', [SertifikatController::class, 'create'])->name('sertifikat.create');
+    Route::post('/sertifikat', [SertifikatController::class, 'store'])->name('sertifikat.store');
+    Route::get('/sertifikat/{sertifikat}/preview', [SertifikatController::class, 'preview'])->name('sertifikat.preview');
+    Route::delete('/sertifikat/{sertifikat}', [SertifikatController::class, 'destroy'])->name('sertifikat.destroy');
+    Route::get('/sertifikat/{sertifikat}/edit', [SertifikatController::class, 'edit'])->name('sertifikat.edit');
+    Route::put('/sertifikat/{sertifikat}', [SertifikatController::class, 'update'])->name('sertifikat.update');
     Route::get('change-password', [AuthController::class, 'showChangePasswordForm'])->name('password.change');
     Route::post('change-password', [AuthController::class, 'changePassword'])->name('password.update');
+});
 
-    Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
+// Rute untuk dashboard admin
+Route::middleware('auth:admin')->group(function () {
+    Route::get('/dashboard/admin', [DashboardController::class, 'admin'])->name('dashboard.admin');
     Route::get('/mahasiswa', [MahasiswaController::class, 'index'])->name('mahasiswa.index');
-
-    Route::resource('sertifikat', SertifikatController::class);
-    Route::get('/sertifikat/{sertifikat}/preview', [SertifikatController::class, 'preview'])->name('sertifikat.preview');
-
-    Route::resource('verifikasi', VerifikasiController::class)->parameters(['verifikasi' => 'sertifikat']);
+    Route::get('/verifikasi', [VerifikasiController::class, 'index'])->name('verifikasi.index');
+    Route::put('/verifikasi/{sertifikat}', [VerifikasiController::class, 'update'])->name('verifikasi.update');
+    Route::put('/verifikasi/{id}/restore', [VerifikasiController::class, 'restore'])->name('verifikasi.restore');
     Route::get('verifikasi/{sertifikat}/preview', [VerifikasiController::class, 'preview'])->name('verifikasi.preview');
     Route::put('/sertifikat/{sertifikat}/update-nde', [SertifikatController::class, 'updateNde'])->name('sertifikat.update-nde');
     Route::get('/export/sertifikat', [ExportController::class, 'exportSertifikat'])->name('export.sertifikat');
-
-    Route::resource('eprt-khusus', EprtKhususController::class)->parameters([
-        'eprt-khusus' => 'eprtKhusus'
-    ]);
-
+    Route::resource('eprt-khusus', EprtKhususController::class)->parameters(['eprt-khusus' => 'eprtKhusus']);
     Route::resource('mahasiswa', MahasiswaController::class);
 });
+
+// Rute untuk logout (bisa diakses oleh admin dan mahasiswa)
+Route::post('logout', [AuthController::class, 'logout'])->name('logout');
 
 // =============================
 // ✅ LUPA PASSWORD
 // =============================
 Route::get('/reset-password', [AuthController::class, 'showResetPasswordForm'])->name('reset.password.form');
 Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('reset.password');
-
-// =============================
-// ✅ DASHBOARD (ADMIN & MAHASISWA)
-// =============================
-// Rute untuk dashboard mahasiswa
-Route::get('/dashboard/mahasiswa', [DashboardController::class, 'mahasiswa'])->name('dashboard.mahasiswa')->middleware('auth:mahasiswa');
-// Rute untuk dashboard admin
-Route::get('/dashboard/admin', [DashboardController::class, 'admin'])->name('dashboard.admin')->middleware('auth');
-
 
 // =============================
 // ✅ MANAJEMEN SERTIFIKAT (MAHASISWA)
@@ -85,7 +87,7 @@ Route::middleware('auth:mahasiswa')->group(function () {
 // =============================
 // ✅ VERIFIKASI SERTIFIKAT (ADMIN)
 // =============================
-Route::middleware('auth')->group(function () {
+Route::middleware('auth:admin')->group(function () {
     Route::get('/verifikasi', [VerifikasiController::class, 'index'])->name('verifikasi.index');
     Route::put('/verifikasi/{sertifikat}', [VerifikasiController::class, 'update'])->name('verifikasi.update');
     Route::put('/verifikasi/{id}/restore', [VerifikasiController::class, 'restore'])->name('verifikasi.restore');
@@ -96,7 +98,7 @@ Route::middleware('auth')->group(function () {
 // =============================
 // ✅ LAPORAN SERTIFIKAT (ADMIN)
 // =============================
-Route::middleware('auth')->group(function () {
+Route::middleware('auth:admin')->group(function () {
     Route::get('/laporan', [LaporanController::class, 'index'])->name('laporan.index');
     Route::post('/laporan/export', [LaporanController::class, 'export'])->name('laporan.export');
 });

@@ -13,12 +13,15 @@ class SertifikatController extends Controller
     // 🟢 Menampilkan daftar sertifikat
     public function index()
     {
-        if (auth('web')->check()) {
-            $sertifikats = \App\Models\Sertifikat::with(['mahasiswa', 'mahasiswa.programStudi'])->latest()->get();
+        if (auth('admin')->check()) {
+            $sertifikats = Sertifikat::with(['mahasiswa.programStudi'])->latest()->get();
             return view('sertifikat.index_admin', compact('sertifikats'));
         } elseif (auth('mahasiswa')->check()) {
             $mahasiswaId = auth('mahasiswa')->user()->id;
-            $sertifikats = \App\Models\Sertifikat::where('mahasiswa_id', $mahasiswaId)->latest()->get();
+            $sertifikats = Sertifikat::where('mahasiswa_id', $mahasiswaId)
+                ->with(['mahasiswa.programStudi'])
+                ->latest()
+                ->get();
             return view('sertifikat.index', compact('sertifikats'));
         } else {
             abort(403);
@@ -108,7 +111,7 @@ class SertifikatController extends Controller
         try {
             // Hapus file dari storage jika ada file_path
             if (!empty($sertifikat->file_path)) {
-                \Storage::disk('public')->delete($sertifikat->file_path);
+                Storage::disk('public')->delete($sertifikat->file_path);
             }
             $sertifikat->delete();
             return redirect()->route('sertifikat.index')->with('success', 'Sertifikat berhasil dihapus.');

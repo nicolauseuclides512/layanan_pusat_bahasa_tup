@@ -195,12 +195,20 @@
             border-top: 1px solid #dee2e6;
             padding: 1rem;
         }
+
+        .logo-navbar {
+            background: #fff;
+            border-radius: 4px;
+            padding: 2px 2px;
+            height: 48px;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+        }
     </style>
 
     @stack('styles')
 </head>
 <body>
-    @if(auth('web')->check())
+    @if(auth('admin')->check())
         @include('layouts.partials.navbar_admin')
     @elseif(auth('mahasiswa')->check())
         @include('layouts.partials.navbar_mahasiswa')
@@ -208,7 +216,7 @@
 
     <div class="d-flex">
         <!-- Sidebar -->
-        @if(auth('web')->check())
+        @if(auth('admin')->check())
             <div class="sidebar-custom">
                 @include('layouts.sidebar_admin')
             </div>

@@ -1,7 +1,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
     <div class="container-fluid">
         <a class="navbar-brand fw-bold" href="#">
-            <img src="{{ asset('img/logo-telkom.png') }}" alt="Logo" height="32" class="me-2">
+            <img src="{{ asset('img/Logo Pusat Bahasa TUP.png') }}" alt="Logo" class="logo-navbar me-2">
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarMahasiswa" aria-controls="navbarMahasiswa" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>

@@ -10,7 +10,7 @@
             <form method="POST" action="{{ route('password.update') }}">
                 @csrf
                 <div class="mb-3">
-                    <input id="email" type="email" class="form-control rounded-pill @error('email') is-invalid @enderror" name="email" value="{{ old('email', auth('mahasiswa')->user()->email ?? auth('web')->user()->email) }}" required readonly>
+                    <input id="email" type="email" class="form-control rounded-pill @error('email') is-invalid @enderror" name="email" value="{{ old('email', auth('mahasiswa')->user()->email ?? auth('admin')->user()->email) }}" required readonly>
                     @error('email')
                         <span class="invalid-feedback d-block" role="alert">
                             <strong>{{ $message }}</strong>
