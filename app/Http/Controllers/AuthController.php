@@ -68,6 +68,8 @@ class AuthController extends Controller
     public function logout()
     {
         Auth::logout();
+        request()->session()->flush();
+        request()->session()->regenerate();
         return redirect('/login')->with('success', 'Logout berhasil!');
     }
 
